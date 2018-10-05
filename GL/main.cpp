@@ -8,9 +8,7 @@
 #include <GLFW/glfw3.h>
 
 #include "Shader.h"
-
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+#include "Texture2D.h"
 
 
 #define AUTO_COUT_MSG(str) std::cout << str << std::endl
@@ -46,8 +44,6 @@ int main()
 	//glEnable(GL_CULL_FACE);
 	//glCullFace(GL_BACK);
 
-	Shader * shader = new Shader("VertexSource.txt", "FragmentSource.txt");
-
 	//vertex array object
 	unsigned int VAO;
 	glGenVertexArrays(1, &VAO);
@@ -75,58 +71,14 @@ int main()
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(6 * sizeof(float)));
 	glEnableVertexAttribArray(2);
 
-	//加载图片1
-	//生成纹理
-	unsigned int texture1,texture2;
-	glGenTextures(1, &texture1);
-	glBindTexture(GL_TEXTURE_2D, texture1);
-
-	//配置纹理环绕和纹理过滤的方式
-	glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	stbi_set_flip_vertically_on_load(true);
-
-	int width, height, nrChannels;
-	unsigned char * picData = stbi_load("pic.jpg", &width, &height, &nrChannels, 0);
-	if(picData)
-	{
-		//将图片载入cpu当中
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, picData);
-		glGenerateMipmap(GL_TEXTURE_2D);
-	}else
-	{
-		AUTO_COUT_MSG("load img failed");
-	}
-	stbi_image_free(picData);
-
-	glGenTextures(1, &texture2);
-	glBindTexture(GL_TEXTURE_2D, texture2);
-
-	//配置纹理环绕和纹理过滤的方式
-	glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	//加载图片2
-	picData = stbi_load("awesomeface.jpg", &width, &height, &nrChannels, 0);
-	if (picData)
-	{
-		//将图片载入cpu当中
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, picData);
-		glGenerateMipmap(GL_TEXTURE_2D);
-	}
-	else
-	{
-		AUTO_COUT_MSG("load img failed");
-	}
-	stbi_image_free(picData);
+	Shader * shader = new Shader("VertexSource.txt", "FragmentSource.txt");
 
 
+	Texture2D * picTex = new Texture2D("pic.jpg");
+	Texture2D * awesomeface = new Texture2D("awesomeface.png");
 
+	
+	//设定哪个texture2D对应哪个simpler2D
 	shader->use();
 	shader->setInt("texture1", 0);
 	shader->setInt("texture2", 1);
@@ -140,11 +92,8 @@ int main()
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, texture1);
-
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, texture2);
+		picTex->active(GL_TEXTURE0);
+		awesomeface->active(GL_TEXTURE1);
 
 		//为shader添加uniform
 		float timeValue = glfwGetTime();
@@ -164,6 +113,9 @@ int main()
 	}
 
 	delete shader;
+	delete picTex;
+	delete awesomeface;
+
 	glfwTerminate();
 	return 0;
 }
