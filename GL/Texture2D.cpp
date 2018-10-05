@@ -35,12 +35,12 @@ void Texture2D::loadTexture2D(const char * resourcePath)
 {
 	int width, height, nrChannal;
 	unsigned char * picData = stbi_load(resourcePath, &width, &height, &nrChannal, 0);
-	if(picData)
+	if (picData)
 	{
 		//将图片载入cpu当中
 		switch (nrChannal)
 		{
-		case RGB_CHANNAL:			
+		case RGB_CHANNAL:
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, picData);
 			break;
 		case RGBA_CHANNAL:
@@ -50,9 +50,9 @@ void Texture2D::loadTexture2D(const char * resourcePath)
 			break;
 		}
 
-		
 		glGenerateMipmap(GL_TEXTURE_2D);
-	}else
+	}
+	else
 	{
 		throw exception("load img failed");
 	}

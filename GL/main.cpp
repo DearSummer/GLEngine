@@ -77,7 +77,7 @@ int main()
 	Texture2D * picTex = new Texture2D("pic.jpg");
 	Texture2D * awesomeface = new Texture2D("awesomeface.png");
 
-	
+
 	//设定哪个texture2D对应哪个simpler2D
 	shader->use();
 	shader->setInt("texture1", 0);
