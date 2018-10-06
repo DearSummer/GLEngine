@@ -80,7 +80,6 @@ int main()
 
 	Shader * shader = new Shader("VertexSource.txt", "FragmentSource.txt");
 
-
 	Texture2D * picTex = Texture2D::Builder().setResourcePath("pic.jpg").build();
 	Texture2D * awesomeface = Texture2D::Builder().setResourcePath("awesomeface.png").build();
 
@@ -90,7 +89,12 @@ int main()
 	shader->setInt("texture1", 0);
 	shader->setInt("texture2", 1);
 
-	
+	Matrix4 modelMat(1.0f);
+	modelMat = glm::rotate(modelMat, glm::radians(-55.0f), glm::vec3(1.0f, 0, 0));
+	Matrix4 viewMat(1.0f);
+	viewMat = glm::translate(viewMat, glm::vec3(0.0f, 0.0f, -3.0f));
+	Matrix4 projectionMat(1.0f);
+	projectionMat = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
 
 	while(!glfwWindowShouldClose(glfwWindow))
 	{
@@ -104,15 +108,19 @@ int main()
 		picTex->active(GL_TEXTURE0);
 		awesomeface->active(GL_TEXTURE1);
 
-		Matrix4 trans = IDENTITY_MATIX;
-		trans = glm::translate(trans, glm::vec3(0.5f, 0, 0));
-		shader->setMatrix4X4("transform", 1, glm::value_ptr(trans));
+		//Matrix4 trans = IDENTITY_MATIX;
+		//trans = glm::translate(trans, glm::vec3(0.5f, 0, 0));
+		//shader->setMatrix4X4("transform", 1, glm::value_ptr(trans));
 
 		//为shader添加uniform
-		float timeValue = glfwGetTime();
-		float offsetValue = (sin(timeValue) / 2);
-		shader->setFloat("mixValue", mixValue);
-		shader->setFloat("offset", offsetValue);
+		//float timeValue = glfwGetTime();
+		//float offsetValue = (sin(timeValue) / 2);
+		//shader->setFloat("offset", offsetValue);
+
+		shader->setFloat("mixValue", mixValue);		
+		shader->setMatrix4X4("modelMat", 1, glm::value_ptr(modelMat));
+		shader->setMatrix4X4("viewMat", 1, glm::value_ptr(viewMat));
+		shader->setMatrix4X4("projectionMat", 1, glm::value_ptr(projectionMat));
 		shader->use();
 		
 		//建立三角形
@@ -121,14 +129,6 @@ int main()
 
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
-	    trans = IDENTITY_MATIX;
-		trans = glm::scale(trans, glm::vec3(sin(glfwGetTime()) /2 + 0.5f, sin(glfwGetTime())/2 + 0.5f, 1));
-		trans = glm::translate(trans, glm::vec3(-0.5f, 0.5f, 0));
-		shader->setMatrix4X4("transform", 1, glm::value_ptr(trans));
-		shader->setFloat("mixValue", -mixValue);
-		shader->setFloat("offset", 0);
-		shader->use();
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 		//render windows
 		glfwSwapBuffers(glfwWindow);
