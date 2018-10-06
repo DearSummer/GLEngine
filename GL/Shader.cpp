@@ -129,3 +129,9 @@ void Shader::setUnsignInt(const std::string & name, const unsigned int value) co
 	glUniform1ui(glGetUniformLocation(id, name.c_str()), value);
 }
 
+void Shader::setMatrix4X4(const std::string & name, const GLsizei count, const GLfloat * value) const
+{
+	glUniformMatrix4fv(glGetUniformLocation(id, name.c_str()), count, GL_FALSE, value);
+}
+
+

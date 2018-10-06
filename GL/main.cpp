@@ -1,11 +1,13 @@
 
-
 #define GLEW_STATIC 
 
 #include <iostream>
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include "Shader.h"
 #include "Texture2D.h"
@@ -26,6 +28,11 @@ const unsigned int indices[] = {
 	1,2,3
 };
 
+float mixValue = 0.1f;
+
+typedef glm::mat4 Matrix4;
+
+#define IDENTITY_MATIX Matrix4(1.0f)
 
 
 void processInput(GLFWwindow * window);
@@ -74,14 +81,16 @@ int main()
 	Shader * shader = new Shader("VertexSource.txt", "FragmentSource.txt");
 
 
-	Texture2D * picTex = new Texture2D("pic.jpg");
-	Texture2D * awesomeface = new Texture2D("awesomeface.png");
+	Texture2D * picTex = Texture2D::Builder().setResourcePath("pic.jpg").build();
+	Texture2D * awesomeface = Texture2D::Builder().setResourcePath("awesomeface.png").build();
 
 
 	//设定哪个texture2D对应哪个simpler2D
 	shader->use();
 	shader->setInt("texture1", 0);
 	shader->setInt("texture2", 1);
+
+	
 
 	while(!glfwWindowShouldClose(glfwWindow))
 	{
@@ -95,16 +104,30 @@ int main()
 		picTex->active(GL_TEXTURE0);
 		awesomeface->active(GL_TEXTURE1);
 
+		Matrix4 trans = IDENTITY_MATIX;
+		trans = glm::translate(trans, glm::vec3(0.5f, 0, 0));
+		shader->setMatrix4X4("transform", 1, glm::value_ptr(trans));
+
 		//为shader添加uniform
 		float timeValue = glfwGetTime();
-		float greenValue = (sin(timeValue) / 2);
-		shader->setFloat("offset", greenValue);
+		float offsetValue = (sin(timeValue) / 2);
+		shader->setFloat("mixValue", mixValue);
+		shader->setFloat("offset", offsetValue);
 		shader->use();
-
+		
 		//建立三角形
 		glBindVertexArray(VAO);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+	    trans = IDENTITY_MATIX;
+		trans = glm::scale(trans, glm::vec3(sin(glfwGetTime()) /2 + 0.5f, sin(glfwGetTime())/2 + 0.5f, 1));
+		trans = glm::translate(trans, glm::vec3(-0.5f, 0.5f, 0));
+		shader->setMatrix4X4("transform", 1, glm::value_ptr(trans));
+		shader->setFloat("mixValue", -mixValue);
+		shader->setFloat("offset", 0);
+		shader->use();
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 		//render windows
@@ -119,6 +142,8 @@ int main()
 	glfwTerminate();
 	return 0;
 }
+
+
 
 GLFWwindow * initWindow()
 {
@@ -153,5 +178,14 @@ void processInput(GLFWwindow * window)
 	if(glfwGetKey(window,GLFW_KEY_ESCAPE) == GLFW_PRESS)
 	{
 		glfwSetWindowShouldClose(window, true);
+	}
+
+	if(glfwGetKey(window,GLFW_KEY_UP) == GLFW_PRESS)
+	{
+		mixValue += 0.001f;
+	}
+	if(glfwGetKey(window,GLFW_KEY_DOWN) == GLFW_PRESS)
+	{
+		mixValue -= 0.001f;
 	}
 }

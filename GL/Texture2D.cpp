@@ -11,25 +11,6 @@ using std::exception;
 #define RGB_CHANNAL  3
 #define RGBA_CHANNAL 4
 
-Texture2D::Texture2D()
-{
-	glGenTextures(1, &id);
-	glBindTexture(GL_TEXTURE_2D, id);
-
-	//配置纹理环绕和纹理过滤的方式
-	setTextureLoadParameter(GL_TEXTURE_WRAP_S, GL_REPEAT);
-	setTextureLoadParameter(GL_TEXTURE_WRAP_T, GL_REPEAT);
-	setTextureLoadParameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	setTextureLoadParameter(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	stbi_set_flip_vertically_on_load(true);
-}
-
-Texture2D::Texture2D(const char * resourcePath) :Texture2D()
-{
-	loadTexture2D(resourcePath);
-}
-
 
 void Texture2D::loadTexture2D(const char * resourcePath)
 {
@@ -59,10 +40,7 @@ void Texture2D::loadTexture2D(const char * resourcePath)
 	stbi_image_free(picData);
 }
 
-void Texture2D::setTextureLoadParameter(const GLenum name, const GLint param)
-{
-	glTextureParameteri(GL_TEXTURE_2D, name, param);
-}
+
 
 void Texture2D::active(const GLenum texture) const
 {
@@ -73,4 +51,55 @@ void Texture2D::active(const GLenum texture) const
 void Texture2D::active() const
 {
 	glBindTexture(GL_TEXTURE_2D, id);
+}
+
+Texture2D::Builder & Texture2D::Builder::setTextureLoadParamerter(const GLenum name, const GLint param)
+{
+	switch (name)
+	{
+	case GL_TEXTURE_WRAP_S:
+		wrapS = param;
+		break;;
+	case GL_TEXTURE_WRAP_T:
+		wrapT = param;
+		break;
+	case GL_TEXTURE_MIN_FILTER:
+		minFilter = param;
+		break;
+	case GL_TEXTURE_MAG_FILTER:
+		magFilter = param;
+		break;
+	default:
+		throw exception("not exist such name");
+	}
+	
+	return * this;
+}
+
+Texture2D::Builder & Texture2D::Builder::setResourcePath(const char* resourcePath)
+{
+	this->resourcePath = resourcePath;
+	return * this;
+}
+
+Texture2D * Texture2D::Builder::build()
+{
+	stbi_set_flip_vertically_on_load(true);
+
+	glGenTextures(1, &id);
+	glBindTexture(GL_TEXTURE_2D, id);
+
+	glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapS);
+	glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapT);
+	glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilter);
+	glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magFilter);
+
+	Texture2D * result = new Texture2D();
+	result->id = id;
+
+	if (resourcePath == nullptr)
+		return result;
+
+	loadTexture2D(resourcePath);
+	return result;
 }
