@@ -52,10 +52,10 @@ void Camera::updatePos(const glm::vec3 deltaPos)
 	this->position += deltaPos;
 }
 
-void Camera::updateLookAt(const float detlaPitch, const float deplaYaw)
+void Camera::updateLookAt(const float detlaPitch, const float detlaYaw)
 {
 	pitch += detlaPitch;
-	yaw += deplaYaw;
+	yaw += detlaYaw;
 
 	updateCameraVertor();
 }

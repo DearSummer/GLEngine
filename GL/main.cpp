@@ -264,6 +264,16 @@ void processInput(GLFWwindow * window)
 	{
 		mixValue -= 0.001f;
 	}
+
+	if(glfwGetKey(window,GLFW_KEY_W) == GLFW_PRESS)
+	{
+		camera->updatePos(glm::vec3(0, 0, 1) * camera->forward * deltaTime);
+	}
+
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+	{
+		camera->updatePos(glm::vec3(0, 0, -1) * camera->forward * deltaTime);
+	}
 }
 
 float lastPosX, lastPosY;
@@ -282,8 +292,6 @@ void cursor_callback(GLFWwindow * window, double posX, double posY)
 
 	lastPosX = posX;
 	lastPosY = posY;
-
-	std::cout << detlaX << std::endl;
 
 	camera->updateLookAt(detlaY * deltaTime, detlaX * deltaTime);
 
