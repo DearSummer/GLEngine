@@ -21,6 +21,9 @@ Camera::Camera(const glm::vec3 position, const glm::vec3 lookAtTargetPos, const 
 	forward = glm::normalize(lookAtTargetPos - position);
 	right = glm::normalize(glm::cross(forward, worldUpCoordinate));
 	up = glm::normalize(glm::cross(forward, right));
+
+	pitch = glm::asin(forward.y);
+	yaw = glm::acos(forward.z / glm::cos(pitch));
 }
 
 Camera::Camera(glm::vec3 position, float pitch, float yaw, glm::vec3 worldUpCoordinate)
@@ -31,12 +34,7 @@ Camera::Camera(glm::vec3 position, float pitch, float yaw, glm::vec3 worldUpCoor
 	this->pitch = pitch;
 	this->yaw = yaw;
 
-	forward.x = glm::cos(pitch) * glm::sin(yaw);
-	forward.y = glm::sin(pitch);
-	forward.z = glm::cos(pitch) * glm::cos(yaw);
-
-	right = glm::normalize(glm::cross(forward, worldUpCoordinate));
-	up = glm::normalize(glm::cross(forward, right));
+	updateCameraVertor();
 }
 
 Camera::~Camera()
@@ -50,6 +48,8 @@ glm::mat4 Camera::getViewMatix() const
 void Camera::updatePos(const glm::vec3 deltaPos)
 {
 	this->position += deltaPos;
+
+	updateCameraVertor();
 }
 
 void Camera::updateLookAt(const float detlaPitch, const float detlaYaw)

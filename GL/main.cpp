@@ -81,6 +81,7 @@ const unsigned int indices[] = {
 float mixValue = 0.1f;
 
 Camera * camera = new Camera(glm::vec3(0, 0, 3.0f), glm::radians(0.0f), glm::radians(180.0f));
+//Camera * camera = new Camera(glm::vec3(0, 0, 3), glm::vec3(1, 1, 0));
 
 #define IDENTITY_MATIX glm::mat4(1.0f)
 
@@ -267,12 +268,12 @@ void processInput(GLFWwindow * window)
 
 	if(glfwGetKey(window,GLFW_KEY_W) == GLFW_PRESS)
 	{
-		camera->updatePos(glm::vec3(0, 0, 1) * camera->forward * deltaTime);
+		camera->updatePos(glm::vec3(1, 1, 1) * camera->forward * deltaTime);
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
 	{
-		camera->updatePos(glm::vec3(0, 0, -1) * camera->forward * deltaTime);
+		camera->updatePos(glm::vec3(-1, -1, -1) * camera->forward * deltaTime);
 	}
 }
 
