@@ -11,16 +11,66 @@
 
 #include "Shader.h"
 #include "Texture2D.h"
+#include "Camera.h"
 
 
 #define AUTO_COUT_MSG(str) std::cout << str << std::endl
 
 float vertices[] = {
-	//位置--------------颜色-----------------uv--------
-	0.5f,   0.5f, 0.0f,  1.0f, 0,    0,      1.0f,1.0f,
-	0.5f,  -0.5f, 0.0f,  0,    1.0f, 0,      1.0f,  0,
-	-0.5f, -0.5f, 0.0f,  0,    0,    1.0f,   0,     0,
-	-0.5f,  0.5f, 0.0f,  1.0f, 0,    1.0f,   0,   1.0f
+	-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+	 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+	-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+
+	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+	 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+	 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+	-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+	-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+	-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	 0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+};
+
+glm::vec3 cubePositions[] = {
+  glm::vec3(0.0f,  0.0f,  0.0f),
+  glm::vec3(2.0f,  5.0f, -15.0f),
+  glm::vec3(-1.5f, -2.2f, -2.5f),
+  glm::vec3(-3.8f, -2.0f, -12.3f),
+  glm::vec3(2.4f, -0.4f, -3.5f),
+  glm::vec3(-1.7f,  3.0f, -7.5f),
+  glm::vec3(1.3f, -2.0f, -2.5f),
+  glm::vec3(1.5f,  2.0f, -2.5f),
+  glm::vec3(1.5f,  0.2f, -1.5f),
+  glm::vec3(-1.3f,  1.0f, -1.5f)
 };
 
 const unsigned int indices[] = {
@@ -30,14 +80,16 @@ const unsigned int indices[] = {
 
 float mixValue = 0.1f;
 
-typedef glm::mat4 Matrix4;
+Camera * camera = new Camera(glm::vec3(0, 0, 3.0f), glm::radians(0.0f), glm::radians(180.0f));
 
-#define IDENTITY_MATIX Matrix4(1.0f)
+#define IDENTITY_MATIX glm::mat4(1.0f)
 
+float deltaTime;
 
 void processInput(GLFWwindow * window);
 GLFWwindow * initWindow();
 
+void cursor_callback(GLFWwindow * window, double posX, double posY);
 
 int main()
 {
@@ -48,8 +100,14 @@ int main()
 	}
 
 	//剔除背面
-	//glEnable(GL_CULL_FACE);
-	//glCullFace(GL_BACK);
+	// glEnable(GL_CULL_FACE);
+	// glCullFace(GL_BACK);
+
+	//开启深度测试
+	glEnable(GL_DEPTH_TEST);
+
+	glfwSetInputMode(glfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	glfwSetCursorPosCallback(glfwWindow, cursor_callback);
 
 	//vertex array object
 	unsigned int VAO;
@@ -69,13 +127,13 @@ int main()
 
 
 	//将vbo信息写到vao
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *)0);
 	glEnableVertexAttribArray(0);
 
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(3 * sizeof(float)));
-	glEnableVertexAttribArray(1);
+	// glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(3 * sizeof(float)));
+	// glEnableVertexAttribArray(1);
 
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(6 * sizeof(float)));
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *)(3 * sizeof(float)));
 	glEnableVertexAttribArray(2);
 
 	Shader * shader = new Shader("VertexSource.txt", "FragmentSource.txt");
@@ -89,21 +147,25 @@ int main()
 	shader->setInt("texture1", 0);
 	shader->setInt("texture2", 1);
 
-	Matrix4 modelMat(1.0f);
-	modelMat = glm::rotate(modelMat, glm::radians(-55.0f), glm::vec3(1.0f, 0, 0));
-	Matrix4 viewMat(1.0f);
-	viewMat = glm::translate(viewMat, glm::vec3(0.0f, 0.0f, -3.0f));
-	Matrix4 projectionMat(1.0f);
+	//Camera * camera = new Camera(glm::vec3(0, 0, 3.0f), glm::vec3(0,0,0));
+	
+
+	glm::mat4 modelMat(1.0f);
+	modelMat = glm::rotate(modelMat, glm::radians(-55.0f), glm::vec3(1, 0, 0));
+	
+	glm::mat4 projectionMat(1.0f);
 	projectionMat = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
 
 	while(!glfwWindowShouldClose(glfwWindow))
 	{
+		float preRenderTime = glfwGetTime();
+
 		//handle user input
 		processInput(glfwWindow);
 
 		//render command;
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		picTex->active(GL_TEXTURE0);
 		awesomeface->active(GL_TEXTURE1);
@@ -116,28 +178,42 @@ int main()
 		//float timeValue = glfwGetTime();
 		//float offsetValue = (sin(timeValue) / 2);
 		//shader->setFloat("offset", offsetValue);
+		glm::mat4 viewMat = camera->getViewMatix();
 
-		shader->setFloat("mixValue", mixValue);		
-		shader->setMatrix4X4("modelMat", 1, glm::value_ptr(modelMat));
-		shader->setMatrix4X4("viewMat", 1, glm::value_ptr(viewMat));
-		shader->setMatrix4X4("projectionMat", 1, glm::value_ptr(projectionMat));
-		shader->use();
+		//draw call
+		for (int i = 0; i < 10; i++)
+		{
+			modelMat = IDENTITY_MATIX;
+			modelMat = glm::translate(modelMat, cubePositions[i]);
+			modelMat = glm::rotate(modelMat, glm::radians(30.0f * i) * (float)glfwGetTime(), glm::vec3(1.0f, 1.0f, -1.0f));
+
+			shader->setFloat("mixValue", mixValue);
+			shader->setMatrix4X4("modelMat", 1, glm::value_ptr(modelMat));
+			shader->setMatrix4X4("viewMat", 1, glm::value_ptr(viewMat));
+			shader->setMatrix4X4("projectionMat", 1, glm::value_ptr(projectionMat));
+			shader->use();
+
+			//建立三角形
+			glBindVertexArray(VAO);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+		}
 		
-		//建立三角形
-		glBindVertexArray(VAO);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 
 		//render windows
 		glfwSwapBuffers(glfwWindow);
 		glfwPollEvents();
+
+		deltaTime = glfwGetTime() - preRenderTime;
 	}
 
 	delete shader;
 	delete picTex;
 	delete awesomeface;
+	delete camera;
 
 	glfwTerminate();
 	return 0;
@@ -188,4 +264,27 @@ void processInput(GLFWwindow * window)
 	{
 		mixValue -= 0.001f;
 	}
+}
+
+float lastPosX, lastPosY;
+bool isFristCursorCallback = true;
+void cursor_callback(GLFWwindow * window, double posX, double posY)
+{
+	if(isFristCursorCallback)
+	{
+		isFristCursorCallback = false;
+		lastPosX = posX;
+		lastPosY = posY;
+	}
+
+	float detlaX = posX - lastPosX;
+	float detlaY = posY - lastPosY;
+
+	lastPosX = posX;
+	lastPosY = posY;
+
+	std::cout << detlaX << std::endl;
+
+	camera->updateLookAt(detlaY * deltaTime, detlaX * deltaTime);
+
 }
