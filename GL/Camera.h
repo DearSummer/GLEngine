@@ -14,13 +14,14 @@ private:
 	float yaw;
 
 	void updateCameraVertor();
+	glm::mat4 lookAtMatrix() const;
 
 public:
 	Camera(glm::vec3 position, glm::vec3 lookAtTargetPos, glm::vec3 worldUpCoordinate = glm::vec3(0, 1, 0));
 	Camera(glm::vec3 position, float pitch, float yaw, glm::vec3 worldUpCoordinate = glm::vec3(0, 1, 0));
 	~Camera();
 
-	glm::mat4 getViewMatix() const;
+	glm::mat4 getViewMatrix() const;
 
 	void updatePos(glm::vec3 deltaPos);
 	void updateLookAt(float detlaPitch, float detlaYaw);

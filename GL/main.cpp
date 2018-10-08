@@ -179,7 +179,7 @@ int main()
 		//float timeValue = glfwGetTime();
 		//float offsetValue = (sin(timeValue) / 2);
 		//shader->setFloat("offset", offsetValue);
-		glm::mat4 viewMat = camera->getViewMatix();
+		glm::mat4 viewMat = camera->getViewMatrix();
 
 		//draw call
 		for (int i = 0; i < 10; i++)
