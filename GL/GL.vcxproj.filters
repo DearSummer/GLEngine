@@ -27,6 +27,9 @@
     <ClInclude Include="Camera.h">
       <Filter>Head Files</Filter>
     </ClInclude>
+    <ClInclude Include="Color.h">
+      <Filter>Head Files\Light</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="pic.jpg">
@@ -37,8 +40,18 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="FragmentSource.txt" />
-    <Text Include="VertexSource.txt" />
+    <Text Include="FragmentSource.frag">
+      <Filter>Shader</Filter>
+    </Text>
+    <Text Include="VertexSource.vert">
+      <Filter>Shader</Filter>
+    </Text>
+    <Text Include="SimpleVertexShader.vert">
+      <Filter>Shader</Filter>
+    </Text>
+    <Text Include="SimpleFragmentShader.frag">
+      <Filter>Shader</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Files">
@@ -52,6 +65,13 @@
     <Filter Include="Head Files">
       <UniqueIdentifier>{83ae8ba3-1fdc-468a-b0f2-04dbefed8f3e}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Head Files\Light">
+      <UniqueIdentifier>{c994e72e-83f3-4a58-aa5d-71e5186ac60d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader">
+      <UniqueIdentifier>{8decab61-79c6-4cae-8379-9a1ac89d6e6d}</UniqueIdentifier>
+      <Extensions>frag;vert</Extensions>
     </Filter>
   </ItemGroup>
 </Project>

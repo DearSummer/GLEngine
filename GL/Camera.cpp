@@ -1,10 +1,10 @@
 #include "Camera.h"
-
-
+#include <iostream>
 
 
 void Camera::updateCameraVertor()
 {
+
 	forward.x = glm::cos(pitch) * glm::sin(yaw);
 	forward.y = glm::sin(pitch);
 	forward.z = glm::cos(pitch) * glm::cos(yaw);
@@ -69,7 +69,7 @@ Camera::~Camera()
 
 glm::mat4 Camera::getViewMatrix() const
 {
-	//return glm::lookAtMatrix(position, position + forward, worldUpCoordinate);
+	//return glm::lookAt(position, position + forward, worldUpCoordinate);
 	return lookAtMatrix();
 }
 

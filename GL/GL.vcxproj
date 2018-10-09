@@ -143,13 +143,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Color.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="Texture2D.h" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="FragmentSource.txt" />
-    <Text Include="VertexSource.txt" />
+    <Text Include="FragmentSource.frag" />
+    <Text Include="SimpleVertexShader.vert" />
+    <Text Include="SimpleFragmentShader.frag" />
+    <Text Include="VertexSource.vert" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="awesomeface.png" />
