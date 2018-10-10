@@ -150,6 +150,8 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="FragmentSource.frag" />
+    <Text Include="LightFragmentShader.frag" />
+    <Text Include="LightVertexShader.vert" />
     <Text Include="SimpleVertexShader.vert" />
     <Text Include="SimpleFragmentShader.frag" />
     <Text Include="VertexSource.vert" />

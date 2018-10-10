@@ -52,6 +52,12 @@
     <Text Include="SimpleFragmentShader.frag">
       <Filter>Shader</Filter>
     </Text>
+    <Text Include="LightVertexShader.vert">
+      <Filter>Shader</Filter>
+    </Text>
+    <Text Include="LightFragmentShader.frag">
+      <Filter>Shader</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Files">

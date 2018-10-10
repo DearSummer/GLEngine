@@ -1,5 +1,4 @@
 #include "Camera.h"
-#include <iostream>
 
 
 void Camera::updateCameraVertor()
@@ -10,7 +9,7 @@ void Camera::updateCameraVertor()
 	forward.z = glm::cos(pitch) * glm::cos(yaw);
 
 	right = glm::normalize(glm::cross(forward, worldUpCoordinate));
-	up = glm::normalize(glm::cross(forward, right));
+	up = glm::normalize(glm::cross(right, forward));
 }
 
 glm::mat4 Camera::lookAtMatrix() const
@@ -47,7 +46,7 @@ Camera::Camera(const glm::vec3 position, const glm::vec3 lookAtTargetPos, const 
 
 	forward = glm::normalize(lookAtTargetPos - position);
 	right = glm::normalize(glm::cross(forward, worldUpCoordinate));
-	up = glm::normalize(glm::cross(forward, right));
+	up = glm::normalize(glm::cross(right, forward));
 
 	pitch = glm::asin(forward.y);
 	yaw = glm::acos(forward.z / glm::cos(pitch));
