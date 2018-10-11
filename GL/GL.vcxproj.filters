@@ -19,6 +19,9 @@
     <ClCompile Include="Math\Matrix.cpp">
       <Filter>Source Files\Math</Filter>
     </ClCompile>
+    <ClCompile Include="Material.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Shader.h">
@@ -47,6 +50,9 @@
     </ClInclude>
     <ClInclude Include="Math\Matrix.h">
       <Filter>Head Files\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>Head Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

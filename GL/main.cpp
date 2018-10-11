@@ -17,7 +17,7 @@
 
 #define AUTO_COUT_MSG(str) std::cout << str << std::endl
 
-#pragma region  "vertices"
+#pragma region  vertices
 float lightvertices[] = {
 		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
 		 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
@@ -258,6 +258,10 @@ int main()
 			glUniform3f(glGetUniformLocation(shader->id, "lightPos"), 0.0f, 6.0f, -1.0f);
 			glUniform3f(glGetUniformLocation(shader->id, "cameraPos"), camera->position.x, camera->position.y, camera->position.z);
 
+			glUniform3f(glGetUniformLocation(shader->id, "material.ambient"), 1.0f,1.0f,1.0f);
+			glUniform3f(glGetUniformLocation(shader->id, "material.diffuse"), 1.0f, 1.0f, 1.0f);
+			glUniform3f(glGetUniformLocation(shader->id, "material.specular"), 1.0f, 1.0f, 1.0f);
+			glUniform1f(glGetUniformLocation(shader->id, "material.shininess"), 32.0f);
 
 		  	//建立三角形
 		  	glBindVertexArray(VAO);
@@ -349,6 +353,14 @@ void processInput(GLFWwindow * window)
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
 	{
 		camera->updatePos(glm::vec3(-1, -1, -1) * camera->forward * deltaTime);
+	}
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+	{
+		camera->updatePos(glm::vec3(1, 1, 1) * camera->right * deltaTime);
+	}
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+	{
+		camera->updatePos(glm::vec3(-1, -1, -1) * camera->right * deltaTime);
 	}
 }
 
