@@ -15,7 +15,7 @@ void Camera::updateCameraVertor()
 glm::mat4 Camera::lookAtMatrix() const
 {
 	const glm::vec3 zAxis = glm::normalize(-forward);
-	const glm::vec3 xAxis = glm::normalize(glm::cross(worldUpCoordinate, zAxis));
+	const glm::vec3 xAxis = glm::normalize(glm::cross(zAxis, worldUpCoordinate));
 	const glm::vec3 yAxis = glm::normalize(glm::cross(zAxis, xAxis));
 
 	glm::mat4 translationMat(1.0f);

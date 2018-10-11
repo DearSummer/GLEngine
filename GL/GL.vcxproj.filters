@@ -13,6 +13,12 @@
     <ClCompile Include="Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Math\Vector.cpp">
+      <Filter>Source Files\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\Matrix.cpp">
+      <Filter>Source Files\Math</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Shader.h">
@@ -29,6 +35,18 @@
     </ClInclude>
     <ClInclude Include="Color.h">
       <Filter>Head Files\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Vector.h">
+      <Filter>Head Files\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\MathTemplate.h">
+      <Filter>Head Files\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\SimpleMath.h">
+      <Filter>Head Files\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Matrix.h">
+      <Filter>Head Files\Math</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -78,6 +96,14 @@
     <Filter Include="Shader">
       <UniqueIdentifier>{8decab61-79c6-4cae-8379-9a1ac89d6e6d}</UniqueIdentifier>
       <Extensions>frag;vert</Extensions>
+    </Filter>
+    <Filter Include="Head Files\Math">
+      <UniqueIdentifier>{c36c7d50-542f-4f10-a7a5-debf64cc1c3e}</UniqueIdentifier>
+      <Extensions>/Math/.h</Extensions>
+    </Filter>
+    <Filter Include="Source Files\Math">
+      <UniqueIdentifier>{24cbba83-d256-4bf4-8019-84341fde3492}</UniqueIdentifier>
+      <Extensions>/Math/.cpp</Extensions>
     </Filter>
   </ItemGroup>
 </Project>

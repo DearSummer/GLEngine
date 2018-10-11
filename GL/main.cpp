@@ -12,7 +12,8 @@
 #include "Shader.h"
 #include "Texture2D.h"
 #include "Camera.h"
-#include "Color.h"
+#include "Color.h"4
+#include "Math/SimpleMath.h"
 
 #define AUTO_COUT_MSG(str) std::cout << str << std::endl
 
@@ -147,7 +148,9 @@ int main()
 		return -1;
 	}
 
-	
+	Vector3 vec{1,2,3};
+	std::cout << vec.x << vec.y << vec.z << std::endl;
+
 	//ÌÞ³ý±³Ãæ
 	// glEnable(GL_CULL_FACE);
 	// glCullFace(GL_BACK);
@@ -252,7 +255,7 @@ int main()
 		 	glUniform3f(glGetUniformLocation(shader->id, "objColor"), COLOR_CORAL.r, COLOR_CORAL.g, COLOR_CORAL.b);
 		 	glUniform3f(glGetUniformLocation(shader->id, "ambientColor"), COLOR_WHITE.r, COLOR_WHITE.g, COLOR_CORAL.b);
 			glUniform3f(glGetUniformLocation(shader->id, "lightColor"), COLOR_WHITE.r, COLOR_WHITE.g, COLOR_CORAL.b);
-			glUniform3f(glGetUniformLocation(shader->id, "lightPos"), 0.0f, -6.0f, -1.0f);
+			glUniform3f(glGetUniformLocation(shader->id, "lightPos"), 0.0f, 6.0f, -1.0f);
 			glUniform3f(glGetUniformLocation(shader->id, "cameraPos"), camera->position.x, camera->position.y, camera->position.z);
 
 
@@ -265,7 +268,7 @@ int main()
 
 		 simpleShader->use();
 		 modelMat = IDENTITY_MATIX;
-		 modelMat = glm::translate(modelMat, glm::vec3(0.0f, 6.0f, -1.0f));
+		 modelMat = glm::translate(modelMat, glm::vec3(0.0f, -6.0f, -1.0f));
 		 modelMat = glm::rotate(modelMat, (float)glfwGetTime(), glm::vec3(0, 1, 1));
 		 simpleShader->setMatrix4X4("modelMat", 1, glm::value_ptr(modelMat));
 		 simpleShader->setMatrix4X4("viewMat", 1, glm::value_ptr(viewMat));
