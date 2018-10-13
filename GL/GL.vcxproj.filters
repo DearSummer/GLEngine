@@ -62,6 +62,12 @@
     <Image Include="awesomeface.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="container.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="container_specular.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Text Include="FragmentSource.frag">
