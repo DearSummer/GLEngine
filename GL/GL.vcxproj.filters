@@ -22,6 +22,9 @@
     <ClCompile Include="Material.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Light.cpp">
+      <Filter>Source Files\Light</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Shader.h">
@@ -54,6 +57,18 @@
     <ClInclude Include="Material.h">
       <Filter>Head Files</Filter>
     </ClInclude>
+    <ClInclude Include="Light.h">
+      <Filter>Head Files\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="Light\DirectionalLight.h">
+      <Filter>Head Files\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="Light\SpotLight.h">
+      <Filter>Head Files\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="Light\PointLight.h">
+      <Filter>Head Files\Light</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="pic.jpg">
@@ -66,6 +81,12 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="container_specular.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="lighting_maps_specular_color.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="matrix.jpg">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
@@ -116,6 +137,9 @@
     <Filter Include="Source Files\Math">
       <UniqueIdentifier>{24cbba83-d256-4bf4-8019-84341fde3492}</UniqueIdentifier>
       <Extensions>/Math/.cpp</Extensions>
+    </Filter>
+    <Filter Include="Source Files\Light">
+      <UniqueIdentifier>{1935bf34-8f63-4d87-8386-a495c6e94552}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

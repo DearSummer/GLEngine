@@ -18,6 +18,7 @@ public:
 	void setInt(const std::string& name, int value) const;
 	void setUnsignInt(const std::string& name, unsigned int value) const;
 	void setMatrix4X4(const std::string& name, GLsizei count, const GLfloat * value) const;
+	void setVector3(const std::string& name, const GLfloat x, const GLfloat y, const GLfloat z) const;
 
 	const char * vertexShaderCode;
 	const char * fragmentShaderCode;

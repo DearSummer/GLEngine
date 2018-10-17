@@ -137,6 +137,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Light.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="Math\Matrix.cpp" />
@@ -147,6 +148,10 @@
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Color.h" />
+    <ClInclude Include="Light.h" />
+    <ClInclude Include="Light\DirectionalLight.h" />
+    <ClInclude Include="Light\PointLight.h" />
+    <ClInclude Include="Light\SpotLight.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="Math\MathTemplate.h" />
     <ClInclude Include="Math\Matrix.h" />
@@ -168,6 +173,8 @@
     <Image Include="awesomeface.png" />
     <Image Include="container.png" />
     <Image Include="container_specular.png" />
+    <Image Include="lighting_maps_specular_color.png" />
+    <Image Include="matrix.jpg" />
     <Image Include="pic.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

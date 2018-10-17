@@ -12,8 +12,8 @@
 #include "Shader.h"
 #include "Texture2D.h"
 #include "Camera.h"
-#include "Color.h"4
 #include "Math/SimpleMath.h"
+#include "Light.h"
 
 #define AUTO_COUT_MSG(str) std::cout << str << std::endl
 
@@ -220,6 +220,11 @@ int main()
 
 	Texture2D * container = Texture2D::Builder().setResourcePath("container.png").build();
 	Texture2D * specularTexture = Texture2D::Builder().setResourcePath("container_specular.png").build();
+	Texture2D * emission = Texture2D::Builder().setResourcePath("matrix.jpg").build();
+
+	Light * light = Light::Builder(shader, glm::vec3(0.3f, 0.3f, 0.3f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f))
+		.setSpotLight(camera->position,camera->forward,glm::cos(glm::radians(12.5f)),glm::cos(glm::radians(25.0f)))
+		.Build();
 
 	while(!glfwWindowShouldClose(glfwWindow))
 	{
@@ -242,7 +247,7 @@ int main()
 		  {
 		  	modelMat = IDENTITY_MATIX;
 		  	modelMat = glm::translate(modelMat, cubePositions[i]);
-		  	modelMat = glm::rotate(modelMat, glm::radians(30.0f * i) * (float)glfwGetTime(), glm::vec3(1.0f, 1.0f, -1.0f));
+		  	//modelMat = glm::rotate(modelMat, glm::radians(30.0f * i) * static_cast<float>(glfwGetTime()), glm::vec3(1.0f, 1.0f, -1.0f));
   
 		 	shader->use();
 		  	shader->setMatrix4X4("m", 1, glm::value_ptr(modelMat));
@@ -250,18 +255,20 @@ int main()
 		  	shader->setMatrix4X4("p", 1, glm::value_ptr(projectionMat));
 			glUniform3f(glGetUniformLocation(shader->id, "cameraPos"), camera->position.x, camera->position.y, camera->position.z);
 
-			glUniform3f(glGetUniformLocation(shader->id, "light.position"), 0.0f, 3.0f, -1.0f);
-			glUniform3f(glGetUniformLocation(shader->id, "light.ambine"), 1.0f, 1.0f, 1.0f);
-			glUniform3f(glGetUniformLocation(shader->id, "light.diffuse"), 1.0f, 1.0f, 1.0f);
-			glUniform3f(glGetUniformLocation(shader->id, "light.specular"), 1.0f, 1.0f, 1.0f);
+
+			light->active("spotLight");
 
 			container->active(GL_TEXTURE0);
 			specularTexture->active(GL_TEXTURE1);
+			emission->active(GL_TEXTURE2);
 
 			//glUniform3f(glGetUniformLocation(shader->id, "material.ambient"), 1.0f,1.0f,1.0f);
 			glUniform1i(glGetUniformLocation(shader->id, "material.diffuse"),0);
 			glUniform1i(glGetUniformLocation(shader->id, "material.specular"), 1);
+			glUniform1i(glGetUniformLocation(shader->id, "material.emission"), 2);
 			glUniform1f(glGetUniformLocation(shader->id, "material.shininess"), 64.0f);
+
+			shader->setFloat("time", glfwGetTime());
 
 		  	//建立三角形
 		  	glBindVertexArray(VAO);
@@ -289,6 +296,7 @@ int main()
 	}
 
 	delete shader;
+	delete light;
 	//delete picTex;
 	//delete awesomeface;
 	delete camera;

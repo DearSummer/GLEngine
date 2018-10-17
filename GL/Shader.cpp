@@ -134,4 +134,9 @@ void Shader::setMatrix4X4(const std::string & name, const GLsizei count, const G
 	glUniformMatrix4fv(glGetUniformLocation(id, name.c_str()), count, GL_FALSE, value);
 }
 
+void Shader::setVector3(const std::string & name, const GLfloat x, const GLfloat y, const GLfloat z) const
+{
+	glUniform3f(glGetUniformLocation(id, name.c_str()), x, y, z);
+}
+
 
