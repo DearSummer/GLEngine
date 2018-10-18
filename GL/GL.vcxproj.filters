@@ -23,7 +23,7 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Light.cpp">
-      <Filter>Source Files\Light</Filter>
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -57,9 +57,6 @@
     <ClInclude Include="Material.h">
       <Filter>Head Files</Filter>
     </ClInclude>
-    <ClInclude Include="Light.h">
-      <Filter>Head Files\Light</Filter>
-    </ClInclude>
     <ClInclude Include="Light\DirectionalLight.h">
       <Filter>Head Files\Light</Filter>
     </ClInclude>
@@ -68,6 +65,9 @@
     </ClInclude>
     <ClInclude Include="Light\PointLight.h">
       <Filter>Head Files\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="Light.h">
+      <Filter>Head Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

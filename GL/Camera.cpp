@@ -1,4 +1,6 @@
 #include "Camera.h"
+#include <ostream>
+#include <iostream>
 
 
 void Camera::updateCameraVertor()
@@ -75,7 +77,7 @@ glm::mat4 Camera::getViewMatrix() const
 void Camera::updatePos(const glm::vec3 deltaPos)
 {
 	this->position += deltaPos;
-
+	std::cout << "X: " << position.x << " Y: " << position.y << " Z: " << position.z << std::endl;
 	updateCameraVertor();
 }
 

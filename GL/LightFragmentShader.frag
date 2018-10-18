@@ -48,9 +48,15 @@ struct SpotLight{
 };
 
 uniform Material material;
-//uniform DirectionalLight light;
-//uniform PointLight pointLight;
-uniform SpotLight spotLight;
+
+
+uniform DirectionalLight directionalLight01;
+uniform PointLight pointLight01;
+uniform PointLight pointLight02;
+uniform PointLight pointLight03;
+uniform PointLight pointLight04;
+uniform SpotLight spotLight01;
+uniform SpotLight spotLight02;
 
 uniform vec3 ambineColor;
 uniform vec3 lightColor;
@@ -63,27 +69,86 @@ uniform float time;
 
 out vec4 FragColor;
 
-void main(){
-	vec3 lightDir = normalize(spotLight.position - fragPos);
-	
-
-	//vec3 lightDir = normalize(-spotLight.direction);
+vec3 calculatorSpotLight(SpotLight light){
+	vec3 result;
+	vec3 lightDir = normalize(light.position - fragPos);
 	vec3 reflectVec = reflect(-lightDir,objNormalize);
+	vec3 cameraVec = normalize(cameraPos - fragPos);
+	
+	float specularAmount = pow(max(dot(reflectVec,cameraVec),0),material.shininess);
+
+	
+	float theta = dot(lightDir,normalize(-light.direction));
+	float epsilon = light.cutOff - light.outerCutOff;
+	float intensity = clamp((theta - light.outerCutOff) / epsilon , 0.0f,1.0f);
+
+	vec3 diffuse = texture(material.diffuse,aTexCoord).xyz  * max(dot(lightDir,objNormalize),0) * light.diffuse * intensity;
+	vec3 specular = texture(material.specular,aTexCoord).xyz * specularAmount * light.specular * intensity;	
+	vec3 ambine = light.ambine * texture(material.diffuse,aTexCoord).xyz;
+
+	result += diffuse;
+	result += specular;
+	result += ambine;
+
+	return result;
+}
+
+vec3 calculatorDirectionalLight(DirectionalLight light){
+	vec3 result;
+	vec3 lightDir = normalize(-light.direction);
+	vec3 reflectVec = reflect(lightDir,objNormalize);
+
 
 	vec3 cameraVec = normalize(cameraPos - fragPos);
 
 	float specularAmount = pow(max(dot(reflectVec,cameraVec),0),material.shininess);
 
-	float theta = dot(lightDir,normalize(-spotLight.direction));
-	float epsilon = spotLight.cutOff - spotLight.outerCutOff;
-	float intensity = clamp((theta - spotLight.outerCutOff) / epsilon , 0.0f,1.0f);
 
-	vec3 diffuse = texture(material.diffuse,aTexCoord).xyz  * max(dot(lightDir,objNormalize),0) * spotLight.diffuse * intensity;
-	vec3 specular = texture(material.specular,aTexCoord).xyz * specularAmount * spotLight.specular * intensity;	
-	vec3 ambine = spotLight.ambine * texture(material.diffuse,aTexCoord).xyz;
+	vec3 diffuse = texture(material.diffuse,aTexCoord).xyz  * max(dot(lightDir,objNormalize),0) * light.diffuse;
+	vec3 specular = texture(material.specular,aTexCoord).xyz * specularAmount * light.specular;	
+	vec3 ambine = light.ambine * texture(material.diffuse,aTexCoord).xyz;
 
-	FragColor = vec4((ambine + diffuse + specular)  ,1.0f);
+	result += diffuse;
+	result += specular;
+	result += ambine;
 
+	return result;
+}
+
+vec3 calculatorPointLight(PointLight light){
+	vec3 result;
+	vec3 lightDir = normalize(light.position - fragPos);
+	vec3 reflectVec = reflect(-lightDir,objNormalize);
+	vec3 cameraVec = normalize(cameraPos - fragPos);
+	
+	float specularAmount = pow(max(dot(reflectVec,cameraVec),0),material.shininess);
+
+	float dist = length(light.position - fragPos);
+	float attenuation = 1.0 / (light.constant + light.linear * dist + light.quadratic *(dist * dist));
+
+	
+	vec3 diffuse = texture(material.diffuse,aTexCoord).xyz  * max(dot(lightDir,objNormalize),0) * light.diffuse * attenuation;
+	vec3 specular = texture(material.specular,aTexCoord).xyz * specularAmount * light.specular * attenuation;	
+	vec3 ambine = light.ambine * texture(material.diffuse,aTexCoord).xyz * attenuation;
+
+	result += diffuse;
+	result += specular;
+	result += ambine;
+
+	return result;
+}
+
+void main(){
+	vec3 result;
+
+	result += calculatorSpotLight(spotLight01);
+	result += calculatorSpotLight(spotLight02);
+	result += calculatorDirectionalLight(directionalLight01);
+	result += calculatorPointLight(pointLight01);
+	result += calculatorPointLight(pointLight02);
+	result += calculatorPointLight(pointLight03);
+	result += calculatorPointLight(pointLight04);
+	FragColor = vec4(result,1.0f);
 	
 	vec3 emission = texture(material.emission,aTexCoord).xyz;
 

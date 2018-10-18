@@ -95,8 +95,8 @@ Shader::Shader(const char * vertexPath, const char * fragmentPath)
 
 		id = createShaderProgram();
 
-		std::cout << vertexShaderCode << std::endl;
-		std::cout << fragmentShaderCode << std::endl;
+		//std::cout << vertexShaderCode << std::endl;
+		//std::cout << fragmentShaderCode << std::endl;
 	}
 	catch (const exception& e)
 	{
@@ -137,6 +137,11 @@ void Shader::setMatrix4X4(const std::string & name, const GLsizei count, const G
 void Shader::setVector3(const std::string & name, const GLfloat x, const GLfloat y, const GLfloat z) const
 {
 	glUniform3f(glGetUniformLocation(id, name.c_str()), x, y, z);
+}
+
+void Shader::setVector3(const std::string & name, const glm::vec3 vec3) const
+{
+	setVector3(name, vec3.x, vec3.y, vec3.z);
 }
 
 

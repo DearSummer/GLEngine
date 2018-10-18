@@ -26,6 +26,8 @@ class Light
 public:
 
 	void active(const std::string& name);
+	glm::vec3 getPosition() const;
+	glm::vec3 getLightColor() const;
 	~Light();
 
 	class Builder

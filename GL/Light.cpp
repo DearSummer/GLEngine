@@ -40,6 +40,43 @@ void Light::active(const std::string & name)
 	}
 }
 
+glm::vec3 Light::getPosition() const
+{
+	glm::vec3 result(0, 0, 0);
+	switch (type)
+	{
+	case POINT_LIGHT:
+		result = pointLight.position;
+		break;
+	case SPOT_LIGHT:
+		result = spotLight.position;
+		break;
+	default: 
+		break;
+	}
+	return result;
+}
+
+glm::vec3 Light::getLightColor() const
+{
+	glm::vec3 result(0);
+	switch (type)
+	{
+	case POINT_LIGHT:
+		result = pointLight.ambine;
+		break;
+	case DIRECTIONAL_LIGHT:
+		result = directionalLight.ambine;
+		break;
+	case SPOT_LIGHT:
+		result = spotLight.ambine;
+		break;
+		default: break;
+
+	}
+	return result;
+}
+
 Light::~Light() = default;
 
 Light::Builder::Builder(Shader* shader, const glm::vec3 ambine, const glm::vec3 diffuse, const glm::vec3 specular)
