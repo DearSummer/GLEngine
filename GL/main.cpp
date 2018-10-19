@@ -9,11 +9,14 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+
 #include "Shader.h"
 #include "Texture2D.h"
 #include "Camera.h"
 #include "Math/SimpleMath.h"
 #include "Light.h"
+#include "Model.h"
+#include <filesystem>
 
 #define AUTO_COUT_MSG(str) std::cout << str << std::endl
 
@@ -127,7 +130,7 @@ const unsigned int indices[] = {
 
 float mixValue = 0.1f;
 
-Camera * camera = new Camera(glm::vec3(0, 0, 3.0f), glm::radians(0.0f), glm::radians(180.0f));
+Camera * camera = new Camera(glm::vec3(-1, 12, -8), glm::radians(45.0f), glm::radians(45.0f));
 //Camera * camera = new Camera(glm::vec3(0, 0, 3), glm::vec3(1, 1, 0));
 
 #define IDENTITY_MATIX glm::mat4(1.0f)
@@ -161,36 +164,36 @@ int main()
 
 	glfwSetInputMode(glfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwSetCursorPosCallback(glfwWindow, cursor_callback);
-
-	//vertex array object
-	unsigned int VAO;
-	glGenVertexArrays(1, &VAO);
-
-	//vertext buffer object
-	unsigned int VBO;
-	glGenBuffers(1, &VBO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-	glBindVertexArray(VAO);
  //
-	// unsigned int EBO;
-	// glGenBuffers(1, &EBO);
-	// glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	// glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-
-	//将vbo信息写到vao
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)0);
-	glEnableVertexAttribArray(0);
-
+	// //vertex array object
+	// unsigned int VAO;
+	// glGenVertexArrays(1, &VAO);
+ //
+	// //vertext buffer object
+	// unsigned int VBO;
+	// glGenBuffers(1, &VBO);
+	// glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	// glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	// glBindVertexArray(VAO);
+ // //
+	// // unsigned int EBO;
+	// // glGenBuffers(1, &EBO);
+	// // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	// // glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+ //
+ //
+	// //将vbo信息写到vao
+	// glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)0);
+	// glEnableVertexAttribArray(0);
+ //
+	// // glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(3 * sizeof(float)));
+	// // glEnableVertexAttribArray(1);
+ //
 	// glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(3 * sizeof(float)));
 	// glEnableVertexAttribArray(1);
-
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(3 * sizeof(float)));
-	glEnableVertexAttribArray(1);
-
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(6 * sizeof(float)));
-	glEnableVertexAttribArray(2);
+ //
+	// glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(6 * sizeof(float)));
+	// glEnableVertexAttribArray(2);
 
 	//Camera * camera = new Camera(glm::vec3(0, 0, 3.0f), glm::vec3(0,0,0));
 	
@@ -201,24 +204,27 @@ int main()
 	glm::mat4 projectionMat(1.0f);
 	projectionMat = glm::perspective(glm::radians(45.0f), windowWidth / windowHeight, 0.1f, 100.0f);
 
-	unsigned int LIGHT_VAO;
-	glGenVertexArrays(1, &LIGHT_VAO);
-	glBindVertexArray(LIGHT_VAO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-
-	//将vbo信息写到vao
-	glVertexAttribPointer(5, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)0);
-	glEnableVertexAttribArray(5);
+	// unsigned int LIGHT_VAO;
+	// glGenVertexArrays(1, &LIGHT_VAO);
+	// glBindVertexArray(LIGHT_VAO);
+	// glBindBuffer(GL_ARRAY_BUFFER, VBO);
+ //
+	// //将vbo信息写到vao
+	// glVertexAttribPointer(5, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)0);
+	// glEnableVertexAttribArray(5);
 
 	Shader * shader = new Shader("LightVertexShader.vert", "LightFragmentShader.frag");
-	Shader * simpleShader = new Shader("SimpleVertexShader.vert", "SimpleFragmentShader.frag");
-
+	//Shader * simpleShader = new Shader("SimpleVertexShader.vert", "SimpleFragmentShader.frag");
+	
+	Model riko("nanosuit.obj");
+	
 	// Texture2D * picTex = Texture2D::Builder().setResourcePath("pic.jpg").build();
 	// Texture2D * awesomeface = Texture2D::Builder().setResourcePath("awesomeface.png").build();
+ //
+	// Texture2D * container = Texture2D::Builder().setResourcePath("container.png").build();
+	// Texture2D * specularTexture = Texture2D::Builder().setResourcePath("container_specular.png").build();
+	// Texture2D * emission = Texture2D::Builder().setResourcePath("matrix.jpg").build();
 
-	Texture2D * container = Texture2D::Builder().setResourcePath("container.png").build();
-	Texture2D * specularTexture = Texture2D::Builder().setResourcePath("container_specular.png").build();
-	Texture2D * emission = Texture2D::Builder().setResourcePath("matrix.jpg").build();
 
 	Light * spotLight01 = Light::Builder(shader, glm::vec3(0, 0, 0), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f))
 		.setSpotLight(glm::vec3(0,1,3),camera->forward,glm::cos(glm::radians(12.5f)),glm::cos(glm::radians(25.0f)))
@@ -241,8 +247,8 @@ int main()
 		.setPointLight(glm::vec3(3.0f, 1.2f, 3.0f), 1.0f, 0.9f, 0.032f)
 		.Build();
 
-	Light * directionalLight = Light::Builder(shader, glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(0.3f, 0.3f, 0.3f), glm::vec3(0.3f, 0.3f, 0.3f))
-		.setDirectionalLight(glm::vec3(glm::radians(30.0f)))
+	Light * directionalLight = Light::Builder(shader, glm::vec3(4, 4, 4), glm::vec3(0.3f, 0.3f, 0.3f), glm::vec3(0.3f, 0.3f, 0.3f))
+		.setDirectionalLight(glm::vec3(glm::radians(-45.0f)))
 		.Build();
 
 	while(!glfwWindowShouldClose(glfwWindow))
@@ -260,21 +266,27 @@ int main()
 		glm::mat4 viewMat = camera->getViewMatrix();
 		projectionMat = glm::perspective(glm::radians(45.0f), windowWidth / windowHeight, 0.1f, 100.0f);
 
+		shader->use();
+		shader->setMatrix4X4("m", 1, glm::value_ptr(modelMat));
+		shader->setMatrix4X4("v", 1, glm::value_ptr(viewMat));
+		shader->setMatrix4X4("p", 1, glm::value_ptr(projectionMat));
 
-		 //draw call
-		  for (int i = 0; i < 10; i++)
-		  {
-		  	modelMat = IDENTITY_MATIX;
-		  	modelMat = glm::translate(modelMat, cubePositions[i]);
-		  	//modelMat = glm::rotate(modelMat, glm::radians(30.0f * i) * static_cast<float>(glfwGetTime()), glm::vec3(1.0f, 1.0f, -1.0f));
-  
-		 	shader->use();
-		  	shader->setMatrix4X4("m", 1, glm::value_ptr(modelMat));
-		  	shader->setMatrix4X4("v", 1, glm::value_ptr(viewMat));
-		  	shader->setMatrix4X4("p", 1, glm::value_ptr(projectionMat));
-			glUniform3f(glGetUniformLocation(shader->id, "cameraPos"), camera->position.x, camera->position.y, camera->position.z);
+		riko.draw(shader);
 
-
+		//  //draw call
+		//   for (int i = 0; i < 10; i++)
+		//   {
+		//   	modelMat = IDENTITY_MATIX;
+		//   	modelMat = glm::translate(modelMat, cubePositions[i]);
+		//   	//modelMat = glm::rotate(modelMat, glm::radians(30.0f * i) * static_cast<float>(glfwGetTime()), glm::vec3(1.0f, 1.0f, -1.0f));
+  //
+		//  	shader->use();
+		//   	shader->setMatrix4X4("m", 1, glm::value_ptr(modelMat));
+		//   	shader->setMatrix4X4("v", 1, glm::value_ptr(viewMat));
+		//   	shader->setMatrix4X4("p", 1, glm::value_ptr(projectionMat));
+		// 	glUniform3f(glGetUniformLocation(shader->id, "cameraPos"), camera->position.x, camera->position.y, camera->position.z);
+  //
+  //
 			spotLight01->active("spotLight01");
 			spotLight02->active("spotLight02");
 			pointLight01->active("pointLight01");
@@ -282,108 +294,108 @@ int main()
 			pointLight03->active("pointLight03");
 			pointLight04->active("pointLight04");
 			directionalLight->active("directionalLight01");
-
-			container->active(GL_TEXTURE0);
-			specularTexture->active(GL_TEXTURE1);
-			emission->active(GL_TEXTURE2);
-
-			//glUniform3f(glGetUniformLocation(shader->id, "material.ambient"), 1.0f,1.0f,1.0f);
-			glUniform1i(glGetUniformLocation(shader->id, "material.diffuse"),0);
-			glUniform1i(glGetUniformLocation(shader->id, "material.specular"), 1);
-			glUniform1i(glGetUniformLocation(shader->id, "material.emission"), 2);
-			glUniform1f(glGetUniformLocation(shader->id, "material.shininess"), 64.0f);
-
-			shader->setFloat("time", glfwGetTime());
-
-		  	//建立三角形
-		  	glBindVertexArray(VAO);
-  
-		  	glDrawArrays(GL_TRIANGLES, 0, 36);
-		  }
-
-		 simpleShader->use();
-		 modelMat = IDENTITY_MATIX;
-		 modelMat = glm::translate(modelMat, spotLight01->getPosition());
-		 modelMat = glm::scale(modelMat, glm::vec3(0.5, 0.5, 0.5));
-		 simpleShader->setVector3("color", spotLight01->getLightColor());
-		 simpleShader->setMatrix4X4("modelMat", 1, glm::value_ptr(modelMat));
-		 simpleShader->setMatrix4X4("viewMat", 1, glm::value_ptr(viewMat));
-		 simpleShader->setMatrix4X4("projectionMat", 1, glm::value_ptr(projectionMat));
-		 glBindVertexArray(LIGHT_VAO);
-		 glDrawArrays(GL_TRIANGLES, 0, 36);
-
-		 simpleShader->use();
-		 modelMat = IDENTITY_MATIX;
-		 modelMat = glm::translate(modelMat, spotLight02->getPosition());
-		 modelMat = glm::scale(modelMat, glm::vec3(0.5, 0.5, 0.5));
-		 simpleShader->setVector3("color", spotLight02->getLightColor());
-		 simpleShader->setMatrix4X4("modelMat", 1, glm::value_ptr(modelMat));
-		 simpleShader->setMatrix4X4("viewMat", 1, glm::value_ptr(viewMat));
-		 simpleShader->setMatrix4X4("projectionMat", 1, glm::value_ptr(projectionMat));
-		 glBindVertexArray(LIGHT_VAO);
-		 glDrawArrays(GL_TRIANGLES, 0, 36);
-
-		 simpleShader->use();
-		 modelMat = IDENTITY_MATIX;
-		 modelMat = glm::translate(modelMat, pointLight01->getPosition());
-		 modelMat = glm::scale(modelMat, glm::vec3(0.5, 0.5, 0.5));
-		 simpleShader->setVector3("color", pointLight01->getLightColor());
-		 simpleShader->setMatrix4X4("modelMat", 1, glm::value_ptr(modelMat));
-		 simpleShader->setMatrix4X4("viewMat", 1, glm::value_ptr(viewMat));
-		 simpleShader->setMatrix4X4("projectionMat", 1, glm::value_ptr(projectionMat));
-		 glBindVertexArray(LIGHT_VAO);
-		 glDrawArrays(GL_TRIANGLES, 0, 36);
-
-
-		 simpleShader->use();
-		 modelMat = IDENTITY_MATIX;
-		 modelMat = glm::translate(modelMat, pointLight02->getPosition());
-		 modelMat = glm::scale(modelMat, glm::vec3(0.5, 0.5, 0.5));
-		 simpleShader->setVector3("color", pointLight02->getLightColor());
-		 simpleShader->setMatrix4X4("modelMat", 1, glm::value_ptr(modelMat));
-		 simpleShader->setMatrix4X4("viewMat", 1, glm::value_ptr(viewMat));
-		 simpleShader->setMatrix4X4("projectionMat", 1, glm::value_ptr(projectionMat));
-		 glBindVertexArray(LIGHT_VAO);
-		 glDrawArrays(GL_TRIANGLES, 0, 36);
-
-
-		 simpleShader->use();
-		 modelMat = IDENTITY_MATIX;
-		 modelMat = glm::translate(modelMat, pointLight03->getPosition());
-		 modelMat = glm::scale(modelMat, glm::vec3(0.5, 0.5, 0.5));
-		 simpleShader->setVector3("color", pointLight03->getLightColor());
-		 simpleShader->setMatrix4X4("modelMat", 1, glm::value_ptr(modelMat));
-		 simpleShader->setMatrix4X4("viewMat", 1, glm::value_ptr(viewMat));
-		 simpleShader->setMatrix4X4("projectionMat", 1, glm::value_ptr(projectionMat));
-		 glBindVertexArray(LIGHT_VAO);
-		 glDrawArrays(GL_TRIANGLES, 0, 36);
-
-
-		 simpleShader->use();
-		 modelMat = IDENTITY_MATIX;
-		 modelMat = glm::translate(modelMat, pointLight04->getPosition());
-		 modelMat = glm::scale(modelMat, glm::vec3(0.5, 0.5, 0.5));
-		simpleShader->setVector3("color", pointLight04->getLightColor());
-		 simpleShader->setMatrix4X4("modelMat", 1, glm::value_ptr(modelMat));
-		 simpleShader->setMatrix4X4("viewMat", 1, glm::value_ptr(viewMat));
-		 simpleShader->setMatrix4X4("projectionMat", 1, glm::value_ptr(projectionMat));
-		 glBindVertexArray(LIGHT_VAO);
-		 glDrawArrays(GL_TRIANGLES, 0, 36);
-
-
-		 simpleShader->use();
-		 modelMat = IDENTITY_MATIX;
-		 modelMat = glm::translate(modelMat, directionalLight->getPosition());
-		 modelMat = glm::scale(modelMat, glm::vec3(0.5, 0.5, 0.5));
-		 simpleShader->setVector3("color", directionalLight->getLightColor());
-		 simpleShader->setMatrix4X4("modelMat", 1, glm::value_ptr(modelMat));
-		 simpleShader->setMatrix4X4("viewMat", 1, glm::value_ptr(viewMat));
-		 simpleShader->setMatrix4X4("projectionMat", 1, glm::value_ptr(projectionMat));
-		 glBindVertexArray(LIGHT_VAO);
-		 glDrawArrays(GL_TRIANGLES, 0, 36);
-
-		//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
+  //
+		// 	container->active(GL_TEXTURE0);
+		// 	specularTexture->active(GL_TEXTURE1);
+		// 	emission->active(GL_TEXTURE2);
+  //
+		// 	//glUniform3f(glGetUniformLocation(shader->id, "material.ambient"), 1.0f,1.0f,1.0f);
+		// 	glUniform1i(glGetUniformLocation(shader->id, "material.diffuse"),0);
+		// 	glUniform1i(glGetUniformLocation(shader->id, "material.specular"), 1);
+		// 	glUniform1i(glGetUniformLocation(shader->id, "material.emission"), 2);
+		// 	glUniform1f(glGetUniformLocation(shader->id, "material.shininess"), 64.0f);
+  //
+		// 	shader->setFloat("time", glfwGetTime());
+  //
+		//   	//建立三角形
+		//   	glBindVertexArray(VAO);
+  //
+		//   	glDrawArrays(GL_TRIANGLES, 0, 36);
+		//   }
+  //
+		//  simpleShader->use();
+		//  modelMat = IDENTITY_MATIX;
+		//  modelMat = glm::translate(modelMat, spotLight01->getPosition());
+		//  modelMat = glm::scale(modelMat, glm::vec3(0.5, 0.5, 0.5));
+		//  simpleShader->setVector3("color", spotLight01->getLightColor());
+		//  simpleShader->setMatrix4X4("modelMat", 1, glm::value_ptr(modelMat));
+		//  simpleShader->setMatrix4X4("viewMat", 1, glm::value_ptr(viewMat));
+		//  simpleShader->setMatrix4X4("projectionMat", 1, glm::value_ptr(projectionMat));
+		//  glBindVertexArray(LIGHT_VAO);
+		//  glDrawArrays(GL_TRIANGLES, 0, 36);
+  //
+		//  simpleShader->use();
+		//  modelMat = IDENTITY_MATIX;
+		//  modelMat = glm::translate(modelMat, spotLight02->getPosition());
+		//  modelMat = glm::scale(modelMat, glm::vec3(0.5, 0.5, 0.5));
+		//  simpleShader->setVector3("color", spotLight02->getLightColor());
+		//  simpleShader->setMatrix4X4("modelMat", 1, glm::value_ptr(modelMat));
+		//  simpleShader->setMatrix4X4("viewMat", 1, glm::value_ptr(viewMat));
+		//  simpleShader->setMatrix4X4("projectionMat", 1, glm::value_ptr(projectionMat));
+		//  glBindVertexArray(LIGHT_VAO);
+		//  glDrawArrays(GL_TRIANGLES, 0, 36);
+  //
+		//  simpleShader->use();
+		//  modelMat = IDENTITY_MATIX;
+		//  modelMat = glm::translate(modelMat, pointLight01->getPosition());
+		//  modelMat = glm::scale(modelMat, glm::vec3(0.5, 0.5, 0.5));
+		//  simpleShader->setVector3("color", pointLight01->getLightColor());
+		//  simpleShader->setMatrix4X4("modelMat", 1, glm::value_ptr(modelMat));
+		//  simpleShader->setMatrix4X4("viewMat", 1, glm::value_ptr(viewMat));
+		//  simpleShader->setMatrix4X4("projectionMat", 1, glm::value_ptr(projectionMat));
+		//  glBindVertexArray(LIGHT_VAO);
+		//  glDrawArrays(GL_TRIANGLES, 0, 36);
+  //
+  //
+		//  simpleShader->use();
+		//  modelMat = IDENTITY_MATIX;
+		//  modelMat = glm::translate(modelMat, pointLight02->getPosition());
+		//  modelMat = glm::scale(modelMat, glm::vec3(0.5, 0.5, 0.5));
+		//  simpleShader->setVector3("color", pointLight02->getLightColor());
+		//  simpleShader->setMatrix4X4("modelMat", 1, glm::value_ptr(modelMat));
+		//  simpleShader->setMatrix4X4("viewMat", 1, glm::value_ptr(viewMat));
+		//  simpleShader->setMatrix4X4("projectionMat", 1, glm::value_ptr(projectionMat));
+		//  glBindVertexArray(LIGHT_VAO);
+		//  glDrawArrays(GL_TRIANGLES, 0, 36);
+  //
+  //
+		//  simpleShader->use();
+		//  modelMat = IDENTITY_MATIX;
+		//  modelMat = glm::translate(modelMat, pointLight03->getPosition());
+		//  modelMat = glm::scale(modelMat, glm::vec3(0.5, 0.5, 0.5));
+		//  simpleShader->setVector3("color", pointLight03->getLightColor());
+		//  simpleShader->setMatrix4X4("modelMat", 1, glm::value_ptr(modelMat));
+		//  simpleShader->setMatrix4X4("viewMat", 1, glm::value_ptr(viewMat));
+		//  simpleShader->setMatrix4X4("projectionMat", 1, glm::value_ptr(projectionMat));
+		//  glBindVertexArray(LIGHT_VAO);
+		//  glDrawArrays(GL_TRIANGLES, 0, 36);
+  //
+  //
+		//  simpleShader->use();
+		//  modelMat = IDENTITY_MATIX;
+		//  modelMat = glm::translate(modelMat, pointLight04->getPosition());
+		//  modelMat = glm::scale(modelMat, glm::vec3(0.5, 0.5, 0.5));
+		// simpleShader->setVector3("color", pointLight04->getLightColor());
+		//  simpleShader->setMatrix4X4("modelMat", 1, glm::value_ptr(modelMat));
+		//  simpleShader->setMatrix4X4("viewMat", 1, glm::value_ptr(viewMat));
+		//  simpleShader->setMatrix4X4("projectionMat", 1, glm::value_ptr(projectionMat));
+		//  glBindVertexArray(LIGHT_VAO);
+		//  glDrawArrays(GL_TRIANGLES, 0, 36);
+  //
+  //
+		//  simpleShader->use();
+		//  modelMat = IDENTITY_MATIX;
+		//  modelMat = glm::translate(modelMat, directionalLight->getPosition());
+		//  modelMat = glm::scale(modelMat, glm::vec3(0.5, 0.5, 0.5));
+		//  simpleShader->setVector3("color", directionalLight->getLightColor());
+		//  simpleShader->setMatrix4X4("modelMat", 1, glm::value_ptr(modelMat));
+		//  simpleShader->setMatrix4X4("viewMat", 1, glm::value_ptr(viewMat));
+		//  simpleShader->setMatrix4X4("projectionMat", 1, glm::value_ptr(projectionMat));
+		//  glBindVertexArray(LIGHT_VAO);
+		//  glDrawArrays(GL_TRIANGLES, 0, 36);
+  //
+		// //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+  //
 
 
 		//render windows
@@ -394,12 +406,12 @@ int main()
 	}
 
 	delete shader;
-	delete spotLight01;
+	//delete spotLight01;
 	//delete picTex;
 	//delete awesomeface;
 	delete camera;
-	delete simpleShader;
-	delete container;
+	//delete simpleShader;
+	//delete container;
 
 	glfwTerminate();
 	return 0;

@@ -6,8 +6,12 @@ in vec2 aTexCoord;
 
 struct Material{
 
-	sampler2D diffuse;
-	sampler2D specular;
+	sampler2D texture_diffuse_1;
+	sampler2D texture_diffuse_2;
+	sampler2D texture_diffuse_3;
+	sampler2D texture_specular_1;
+	sampler2D texture_specular_2;
+	sampler2D texture_specular_3;
 	sampler2D emission;
 	float shininess;
 };
@@ -82,9 +86,15 @@ vec3 calculatorSpotLight(SpotLight light){
 	float epsilon = light.cutOff - light.outerCutOff;
 	float intensity = clamp((theta - light.outerCutOff) / epsilon , 0.0f,1.0f);
 
-	vec3 diffuse = texture(material.diffuse,aTexCoord).xyz  * max(dot(lightDir,objNormalize),0) * light.diffuse * intensity;
-	vec3 specular = texture(material.specular,aTexCoord).xyz * specularAmount * light.specular * intensity;	
-	vec3 ambine = light.ambine * texture(material.diffuse,aTexCoord).xyz;
+	vec3 diffuse = texture(material.texture_diffuse_1,aTexCoord).xyz  * max(dot(lightDir,objNormalize),0) * light.diffuse * intensity;
+	diffuse += texture(material.texture_diffuse_2,aTexCoord).xyz  * max(dot(lightDir,objNormalize),0) * light.diffuse * intensity;
+	diffuse += texture(material.texture_diffuse_3,aTexCoord).xyz  * max(dot(lightDir,objNormalize),0) * light.diffuse * intensity;
+	vec3 specular = texture(material.texture_specular_1,aTexCoord).xyz * specularAmount * light.specular * intensity;	
+	specular += texture(material.texture_specular_1,aTexCoord).xyz * specularAmount * light.specular * intensity;	
+	specular += texture(material.texture_specular_1,aTexCoord).xyz * specularAmount * light.specular * intensity;	
+	vec3 ambine = light.ambine * texture(material.texture_diffuse_1,aTexCoord).xyz;
+	ambine += light.ambine * texture(material.texture_diffuse_2,aTexCoord).xyz;
+	ambine += light.ambine * texture(material.texture_diffuse_3,aTexCoord).xyz;
 
 	result += diffuse;
 	result += specular;
@@ -104,9 +114,17 @@ vec3 calculatorDirectionalLight(DirectionalLight light){
 	float specularAmount = pow(max(dot(reflectVec,cameraVec),0),material.shininess);
 
 
-	vec3 diffuse = texture(material.diffuse,aTexCoord).xyz  * max(dot(lightDir,objNormalize),0) * light.diffuse;
-	vec3 specular = texture(material.specular,aTexCoord).xyz * specularAmount * light.specular;	
-	vec3 ambine = light.ambine * texture(material.diffuse,aTexCoord).xyz;
+	vec3 diffuse = texture(material.texture_diffuse_1,aTexCoord).xyz  * max(dot(lightDir,objNormalize),0) * light.diffuse;
+	diffuse += texture(material.texture_diffuse_2,aTexCoord).xyz  * max(dot(lightDir,objNormalize),0) * light.diffuse;
+	diffuse += texture(material.texture_diffuse_3,aTexCoord).xyz  * max(dot(lightDir,objNormalize),0) * light.diffuse;
+
+	vec3 specular = texture(material.texture_specular_1,aTexCoord).xyz * specularAmount * light.specular;	
+	specular = texture(material.texture_specular_2,aTexCoord).xyz * specularAmount * light.specular;	
+	specular = texture(material.texture_specular_3,aTexCoord).xyz * specularAmount * light.specular;	
+
+	vec3 ambine = light.ambine * texture(material.texture_diffuse_1,aTexCoord).xyz;
+	ambine = light.ambine * texture(material.texture_diffuse_2,aTexCoord).xyz;
+	ambine = light.ambine * texture(material.texture_diffuse_3,aTexCoord).xyz;
 
 	result += diffuse;
 	result += specular;
@@ -127,9 +145,17 @@ vec3 calculatorPointLight(PointLight light){
 	float attenuation = 1.0 / (light.constant + light.linear * dist + light.quadratic *(dist * dist));
 
 	
-	vec3 diffuse = texture(material.diffuse,aTexCoord).xyz  * max(dot(lightDir,objNormalize),0) * light.diffuse * attenuation;
-	vec3 specular = texture(material.specular,aTexCoord).xyz * specularAmount * light.specular * attenuation;	
-	vec3 ambine = light.ambine * texture(material.diffuse,aTexCoord).xyz * attenuation;
+	vec3 diffuse = texture(material.texture_diffuse_1,aTexCoord).xyz  * max(dot(lightDir,objNormalize),0) * light.diffuse * attenuation;
+	diffuse += texture(material.texture_diffuse_2,aTexCoord).xyz  * max(dot(lightDir,objNormalize),0) * light.diffuse * attenuation;
+	diffuse += texture(material.texture_diffuse_3,aTexCoord).xyz  * max(dot(lightDir,objNormalize),0) * light.diffuse * attenuation;
+
+	vec3 specular = texture(material.texture_specular_1,aTexCoord).xyz * specularAmount * light.specular * attenuation;	
+	specular += texture(material.texture_specular_2,aTexCoord).xyz * specularAmount * light.specular * attenuation;	
+	specular += texture(material.texture_specular_3,aTexCoord).xyz * specularAmount * light.specular * attenuation;	
+
+	vec3 ambine = light.ambine * texture(material.texture_diffuse_1,aTexCoord).xyz * attenuation;
+	ambine += light.ambine * texture(material.texture_diffuse_2,aTexCoord).xyz * attenuation;
+	ambine += light.ambine * texture(material.texture_diffuse_3,aTexCoord).xyz * attenuation;
 
 	result += diffuse;
 	result += specular;

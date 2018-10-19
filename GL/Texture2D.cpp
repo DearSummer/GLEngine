@@ -8,6 +8,7 @@
 
 using std::exception;
 
+#define RED_CHANNAL  1
 #define RGB_CHANNAL  3
 #define RGBA_CHANNAL 4
 
@@ -21,6 +22,9 @@ void Texture2D::loadTexture2D(const char * resourcePath)
 		//将图片载入cpu当中
 		switch (nrChannal)
 		{
+		case RED_CHANNAL:
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RED, GL_UNSIGNED_BYTE, picData);
+			break;
 		case RGB_CHANNAL:
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, picData);
 			break;
@@ -28,7 +32,7 @@ void Texture2D::loadTexture2D(const char * resourcePath)
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, picData);
 			break;
 		default:
-			break;
+			throw exception("unknow channl");
 		}
 
 		glGenerateMipmap(GL_TEXTURE_2D);

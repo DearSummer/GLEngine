@@ -25,6 +25,12 @@
     <ClCompile Include="Light.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Model.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Shader.h">
@@ -67,6 +73,12 @@
       <Filter>Head Files\Light</Filter>
     </ClInclude>
     <ClInclude Include="Light.h">
+      <Filter>Head Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Head Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Model.h">
       <Filter>Head Files</Filter>
     </ClInclude>
   </ItemGroup>
