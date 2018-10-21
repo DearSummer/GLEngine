@@ -130,7 +130,7 @@ const unsigned int indices[] = {
 
 float mixValue = 0.1f;
 
-Camera * camera = new Camera(glm::vec3(-1, 12, -8), glm::radians(45.0f), glm::radians(45.0f));
+Camera * camera = new Camera(glm::vec3(0, 0, 0), glm::quat_cast(glm::mat4(1.0f)));
 //Camera * camera = new Camera(glm::vec3(0, 0, 3), glm::vec3(1, 1, 0));
 
 #define IDENTITY_MATIX glm::mat4(1.0f)
@@ -227,11 +227,11 @@ int main()
 
 
 	Light * spotLight01 = Light::Builder(shader, glm::vec3(0, 0, 0), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f))
-		.setSpotLight(glm::vec3(0,1,3),camera->forward,glm::cos(glm::radians(12.5f)),glm::cos(glm::radians(25.0f)))
+		.setSpotLight(glm::vec3(0,1,3),glm::vec3(0,0,-1),glm::cos(glm::radians(12.5f)),glm::cos(glm::radians(25.0f)))
 		.Build();
 
 	Light * spotLight02 = Light::Builder(shader, glm::vec3(0, 0, 0), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f))
-		.setSpotLight(glm::vec3(4, -1, -3), camera->forward, glm::cos(glm::radians(22.5f)), glm::cos(glm::radians(45.0f)))
+		.setSpotLight(glm::vec3(4, -1, -3), glm::vec3(0,0,-1), glm::cos(glm::radians(22.5f)), glm::cos(glm::radians(45.0f)))
 		.Build();
 
 	Light * pointLight01 = Light::Builder(shader, glm::vec3(1.0f, 0, 0), glm::vec3(1, 1, 1), glm::vec3(1, 1, 1))
@@ -465,21 +465,23 @@ void processInput(GLFWwindow * window)
 
 	if(glfwGetKey(window,GLFW_KEY_W) == GLFW_PRESS)
 	{
-		camera->updatePos(glm::vec3(1, 1, 1) * camera->forward * deltaTime);
+		camera->translate(CAMERA_FORWARD_DIRECTION * deltaTime);
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
 	{
-		camera->updatePos(glm::vec3(-1, -1, -1) * camera->forward * deltaTime);
+		camera->translate(-CAMERA_FORWARD_DIRECTION * deltaTime);
 	}
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
 	{
-		camera->updatePos(glm::vec3(1, 1, 1) * camera->right * deltaTime);
+		camera->translate(CAMERA_RIGHT_DIRECTION * deltaTime);
 	}
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 	{
-		camera->updatePos(glm::vec3(-1, -1, -1) * camera->right * deltaTime);
+		camera->translate(-CAMERA_RIGHT_DIRECTION * deltaTime);
 	}
+
+
 }
 
 float lastPosX, lastPosY;
@@ -494,12 +496,13 @@ void cursor_callback(GLFWwindow * window, double posX, double posY)
 	}
 
 	float detlaX = posX - lastPosX;
-	float detlaY = posY - lastPosY;
+	float detlaY = lastPosY - posY;
 
 	lastPosX = posX;
 	lastPosY = posY;
 
-	camera->updateLookAt(detlaY * deltaTime, detlaX * deltaTime);
+	camera->yaw(detlaX * deltaTime);
+	camera->pitch(detlaY * deltaTime);
 
 }
 

@@ -1,90 +1,68 @@
 #include "Camera.h"
-#include <ostream>
+#include <glm/gtc/quaternion.inl>
+#include <glm/ext/quaternion_trigonometric.inl>
 #include <iostream>
+#include <valarray>
 
 
-void Camera::updateCameraVertor()
-{
 
-	forward.x = glm::cos(pitch) * glm::sin(yaw);
-	forward.y = glm::sin(pitch);
-	forward.z = glm::cos(pitch) * glm::cos(yaw);
-
-	right = glm::normalize(glm::cross(forward, worldUpCoordinate));
-	up = glm::normalize(glm::cross(right, forward));
+Camera::Camera(const glm::vec3 & position):position(position),orientation(glm::quat_cast(glm::mat4(1.0f)))
+{	
 }
 
-glm::mat4 Camera::lookAtMatrix() const
+Camera::Camera(const glm::vec3 & position, const glm::quat & orientation)
+	:position(position),orientation(orientation)
 {
-	const glm::vec3 zAxis = glm::normalize(-forward);
-	const glm::vec3 xAxis = glm::normalize(glm::cross(zAxis, worldUpCoordinate));
-	const glm::vec3 yAxis = glm::normalize(glm::cross(zAxis, xAxis));
-
-	glm::mat4 translationMat(1.0f);
-	translationMat[3][0] = -position.x;
-	translationMat[3][1] = -position.y;
-	translationMat[3][2] = -position.z;
-
-	glm::mat4 rotationMat(1.0f);
-	rotationMat[0][0] = xAxis.x;
-	rotationMat[1][0] = xAxis.y;
-	rotationMat[2][0] = xAxis.z;
-	
-	rotationMat[0][1] = yAxis.x;
-	rotationMat[1][1] = yAxis.y;
-	rotationMat[2][1] = yAxis.z;
-
-	rotationMat[0][2] = zAxis.x;
-	rotationMat[1][2] = zAxis.y;
-	rotationMat[2][2] = zAxis.z;
-
-	return rotationMat * translationMat;
 }
-
-Camera::Camera(const glm::vec3 position, const glm::vec3 lookAtTargetPos, const glm::vec3 worldUpCoordinate)
-{
-	this->position = position;
-	this->worldUpCoordinate = worldUpCoordinate;
-
-	forward = glm::normalize(lookAtTargetPos - position);
-	right = glm::normalize(glm::cross(forward, worldUpCoordinate));
-	up = glm::normalize(glm::cross(right, forward));
-
-	pitch = glm::asin(forward.y);
-	yaw = glm::acos(forward.z / glm::cos(pitch));
-}
-
-Camera::Camera(glm::vec3 position, float pitch, float yaw, glm::vec3 worldUpCoordinate)
-{
-	this->position = position;
-	this->worldUpCoordinate = worldUpCoordinate;
-
-	this->pitch = pitch;
-	this->yaw = yaw;
-
-	updateCameraVertor();
-}
-
-Camera::~Camera()
-= default;
 
 glm::mat4 Camera::getViewMatrix() const
 {
-	//return glm::lookAt(position, position + forward, worldUpCoordinate);
-	return lookAtMatrix();
+	return glm::translate(glm::mat4_cast(orientation), position);
 }
 
-void Camera::updatePos(const glm::vec3 deltaPos)
+glm::vec3 & Camera::getPosition()
 {
-	this->position += deltaPos;
-	std::cout << "X: " << position.x << " Y: " << position.y << " Z: " << position.z << std::endl;
-	updateCameraVertor();
+	// TODO: insert return statement here
+	return position;
 }
 
-void Camera::updateLookAt(const float detlaPitch, const float detlaYaw)
+glm::quat & Camera::getOrientation()
 {
-	pitch += detlaPitch;
-	yaw += detlaYaw;
+	// TODO: insert return statement here
+	return orientation;
+}
 
-	updateCameraVertor();
+void Camera::rotate(const float angle, const glm::vec3 & axis)
+{
+	orientation *= glm::angleAxis(angle, glm::normalize(axis * orientation));
+}
+
+void Camera::rotate(const float angle, const float x, const float y, const float z)
+{
+	orientation *= glm::angleAxis(angle, glm::normalize(glm::vec3(x, y, z) * orientation));
+}
+
+void Camera::translate(const glm::vec3 & v)
+{
+	position += v * orientation;
+}
+
+void Camera::translate(const float x, const float y, const float z)
+{
+	position += glm::vec3(x, y, z) * orientation;
+}
+
+void Camera::yaw(const float angle)
+{
+	rotate(angle, 0.0f, 1.0f, 0.0f);
+}
+
+void Camera::pitch(const float angle)
+{
+	rotate(angle, 1.0f, 0.0f, 0.0f);
+}
+
+void Camera::roll(const float angle)
+{
+	rotate(angle, 0.0f, 0.0f, 1.0f);
 }

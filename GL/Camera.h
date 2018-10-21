@@ -1,35 +1,50 @@
 #pragma once
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
+#define CAMERA_FORWARD_DIRECTION glm::vec3(0,0,1)
+#define CAMERA_UP_DIRECTION glm::vec3(0,1,0)
+#define CAMERA_RIGHT_DIRECTION glm::vec3(1,0,0)
 
 #define ZERO_VECTOR3 glm::vec3(0,0,0)
+#include <glm/ext/quaternion_float.hpp>
 
 class Camera
 {
 private:
-	glm::vec3 worldUpCoordinate = ZERO_VECTOR3;
 
-	float pitch;
-	float yaw;
+	glm::vec3 position;
+	glm::quat orientation;
 
-	void updateCameraVertor();
-	glm::mat4 lookAtMatrix() const;
+	glm::vec3 worldUp = glm::vec3(0, 1, 0);
 
 public:
-	Camera(glm::vec3 position, glm::vec3 lookAtTargetPos, glm::vec3 worldUpCoordinate = glm::vec3(0, 1, 0));
-	Camera(glm::vec3 position, float pitch, float yaw, glm::vec3 worldUpCoordinate = glm::vec3(0, 1, 0));
-	~Camera();
+
+	glm::vec3 forward = CAMERA_FORWARD_DIRECTION;
+	glm::vec3 up = CAMERA_UP_DIRECTION;
+	glm::vec3 right = CAMERA_RIGHT_DIRECTION;
+
+	Camera(const Camera&) = default;
+	explicit Camera(const glm::vec3 &position);
+	Camera(const glm::vec3 &position, const glm::quat &orientation);
+
+	~Camera() = default;
+
+	Camera& operator=(const Camera&) = default;
 
 	glm::mat4 getViewMatrix() const;
 
-	void updatePos(glm::vec3 deltaPos);
-	void updateLookAt(float detlaPitch, float detlaYaw);
+	glm::vec3 &getPosition();
+	glm::quat &getOrientation();
 
-	glm::vec3 position = ZERO_VECTOR3;
 
-	glm::vec3 up = ZERO_VECTOR3;
-	glm::vec3 forward = ZERO_VECTOR3;
-	glm::vec3 right = ZERO_VECTOR3;
+	void rotate(float angle,const glm::vec3 &axis);
+	void rotate(float angle, float x, float y, float z);
+
+	void translate(const glm::vec3 &v);
+	void translate(float x, float y, float z);
+
+	void yaw(float angle);
+	void pitch(float angle);
+	void roll(float angle);
+
 };
 
