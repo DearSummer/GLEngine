@@ -32,6 +32,16 @@ glm::quat & Camera::getOrientation()
 	return orientation;
 }
 
+std::string Camera::toString() const
+{
+	std::string posDes = "Camera Pos";
+	posDes.append(" X : " + std::to_string(position.x));
+	posDes.append(" Y : " + std::to_string(position.y));
+	posDes.append(" Z : " + std::to_string(position.z));
+	return posDes;
+	
+}
+
 void Camera::rotate(const float angle, const glm::vec3 & axis)
 {
 	orientation *= glm::angleAxis(angle, glm::normalize(axis * orientation));

@@ -22,10 +22,11 @@ class Light
 	PointLight pointLight;
 	SpotLight spotLight;
 
-	Light(Shader* shader);
+	explicit Light(Shader* shader);
 public:
 
 	void active(const std::string& name);
+	void setPosition(glm::vec3 pos);
 	glm::vec3 getPosition() const;
 	glm::vec3 getLightColor() const;
 	~Light();

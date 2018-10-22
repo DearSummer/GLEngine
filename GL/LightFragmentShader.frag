@@ -12,7 +12,10 @@ struct Material{
 	sampler2D texture_specular_1;
 	sampler2D texture_specular_2;
 	sampler2D texture_specular_3;
-	sampler2D emission;
+	sampler2D texture_emissive_1;
+	sampler2D texture_emissive_2;
+	sampler2D texture_normal_1;
+	sampler2D texture_normal_2;
 	float shininess;
 };
 
@@ -168,22 +171,16 @@ void main(){
 	vec3 result;
 
 	result += calculatorSpotLight(spotLight01);
-	result += calculatorSpotLight(spotLight02);
-	result += calculatorDirectionalLight(directionalLight01);
-	result += calculatorPointLight(pointLight01);
-	result += calculatorPointLight(pointLight02);
-	result += calculatorPointLight(pointLight03);
-	result += calculatorPointLight(pointLight04);
-	FragColor = vec4(result,1.0f);
+	//result += calculatorSpotLight(spotLight02);
+	//result += calculatorDirectionalLight(directionalLight01);
+	//result += calculatorPointLight(pointLight01);
+	//result += calculatorPointLight(pointLight02);
+	//result += calculatorPointLight(pointLight03);
+	//result += calculatorPointLight(pointLight04);
 	
-	vec3 emission = texture(material.emission,aTexCoord).xyz;
+	//result += texture(material.texture_emissive_1,aTexCoord).xyz;
+	//result += texture(material.texture_emissive_2,aTexCoord).xyz;
 
-	//--------------------点光源计算-----------------------------------------
-	//float dist = length(pointLight.position - fragPos);
-	//float attenuation = 1.0f / (pointLight.constant + pointLight.linear * dist + pointLight.quadratic * (dist * dist));
+	FragColor = vec4(result,1.0f);
 
-	emission = emission * ((sin(time) * 0.5) + 0.5);
-	emission = vec3(0.0f);
-
-	//FragColor = vec4(((ambine + diffuse + specular) * attenuation + emission)  ,1.0f);
 }

@@ -6,6 +6,7 @@
 
 #define ZERO_VECTOR3 glm::vec3(0,0,0)
 #include <glm/ext/quaternion_float.hpp>
+#include <string>
 
 class Camera
 {
@@ -35,6 +36,7 @@ public:
 	glm::vec3 &getPosition();
 	glm::quat &getOrientation();
 
+	std::string toString() const;
 
 	void rotate(float angle,const glm::vec3 &axis);
 	void rotate(float angle, float x, float y, float z);

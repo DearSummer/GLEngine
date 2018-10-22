@@ -14,6 +14,8 @@ void Mesh::draw(const Shader * shader)
 {
 	unsigned int diffuseIndex = 1;
 	unsigned int specularIndex = 1;
+	unsigned int normalIndex = 1;
+	unsigned int emissiveIndex = 1;
 
 	for (unsigned int i = 0;i < textures.size();i++)
 	{
@@ -31,7 +33,14 @@ void Mesh::draw(const Shader * shader)
 			name = "texture_specular_";
 			number = std::to_string(specularIndex++);
 			break;
-
+		case TextureType::normal:
+			name = "texture_normal_";
+			number = std::to_string(normalIndex++);
+			break;
+		case TextureType::emissive:
+			name = "texture_emissive_";
+			number = std::to_string(emissiveIndex++);
+			break;
 		default:
 			break;
 		}
@@ -40,6 +49,8 @@ void Mesh::draw(const Shader * shader)
 		shader->setFloat("material." + textureName, i);
 		glBindTexture(GL_TEXTURE_2D, textures[i].id);
 	}
+
+	shader->setFloat("material.shininess", 32.0f);
 
 	glActiveTexture(GL_TEXTURE0);
 

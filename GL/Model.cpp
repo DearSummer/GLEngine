@@ -1,11 +1,15 @@
 #include "Model.h"
 #include <glm/vec2.hpp>
 #include "Texture2D.h"
+#include <iostream>
 
 
-Model::Model(const char * path)
+Model::Model(const char * path, const char * textureDirectory)
+	:directory(textureDirectory)
 {
+
 	loadModel(path);
+
 }
 
 Model::~Model()
@@ -13,13 +17,13 @@ Model::~Model()
 
 void Model::draw(const Shader * shader)
 {
-	for(int i = 0;i < meshes.size();i++)
+	for (auto& mesh : meshes)
 	{
-		meshes[i].draw(shader);
+		mesh.draw(shader);
 	}
 }
 
-void Model::loadModel(std::string path)
+void Model::loadModel(const std::string& path)
 {
 	Assimp::Importer importer;
 	const aiScene * scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
@@ -28,7 +32,6 @@ void Model::loadModel(std::string path)
 	{
 		throw std::exception(importer.GetErrorString());
 	}
-	directory = path.substr(0, path.find_last_of('/'));
 	processNode(scene->mRootNode, scene);
 }
 
@@ -96,12 +99,18 @@ Mesh Model::processMesh(aiMesh * mesh, const aiScene * scene)
 
 		std::vector<Texture> spcularMap = loadMaterialTextures(material, aiTextureType_SPECULAR, TextureType::specular);
 		texturs.insert(texturs.end(), spcularMap.begin(), spcularMap.end());
+
+		std::vector<Texture> emissiveMap = loadMaterialTextures(material, aiTextureType_EMISSIVE, TextureType::emissive);
+		texturs.insert(texturs.end(), emissiveMap.begin(), emissiveMap.end());
+
+		std::vector<Texture> normalsMap = loadMaterialTextures(material, aiTextureType_NORMALS, TextureType::normal);
+		texturs.insert(texturs.end(), normalsMap.begin(), normalsMap.end());
 	}
 
 	return Mesh(vertices, indices, texturs);
 }
 
-std::vector<Texture> Model::loadMaterialTextures(aiMaterial * mat, aiTextureType type, TextureType textureType)
+std::vector<Texture> Model::loadMaterialTextures(aiMaterial * mat, const aiTextureType type, const TextureType textureType)
 {
 	std::vector<Texture> textures;
 	for(unsigned int i = 0;i < mat->GetTextureCount(type);i++)
@@ -109,11 +118,11 @@ std::vector<Texture> Model::loadMaterialTextures(aiMaterial * mat, aiTextureType
 		aiString str;
 		mat->GetTexture(type, i, &str);
 		bool skip = false;
-		for(unsigned int j = 0;j < texturesLoaded.size();j++)
+		for (auto& textureLoaded : texturesLoaded)
 		{
-			if(std::strcmp(texturesLoaded[j].path.data,str.C_Str()) == 0)
+			if(std::strcmp(textureLoaded.path.data,str.C_Str()) == 0)
 			{
-				textures.push_back(texturesLoaded[j]);
+				textures.push_back(textureLoaded);
 				skip = true;
 				break;
 			}
@@ -121,11 +130,19 @@ std::vector<Texture> Model::loadMaterialTextures(aiMaterial * mat, aiTextureType
 		if(skip)
 			continue;
 
-		Texture texture;
+		
 		std::string resourcePath = directory;
-		resourcePath.append("/");
-		resourcePath.append(str.C_Str());
-		Texture2D * texture2D = Texture2D::Builder().setResourcePath(str.C_Str()).build();
+		std::string tempStr = str.C_Str();
+		const int index = tempStr.find_last_of("\\");
+		if (index > 0)
+			tempStr = tempStr.substr(index + 1); // ½«"\\"ºÅÈ¥³ý
+
+		resourcePath.append(tempStr);
+		Texture2D * texture2D = Texture2D::Builder().setResourcePath(resourcePath.c_str()).build();
+		if(texture2D == nullptr)
+			continue;
+
+		Texture texture;
 		texture.id = texture2D->id;
 		texture.type = textureType;
 		texture.path = str;

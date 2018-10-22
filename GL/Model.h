@@ -9,7 +9,7 @@
 class Model
 {
 public:
-	Model(const char* path);
+	Model(const char* path,const char * textureDirectory);
 	~Model();
 
 	void draw(const Shader * shader);
@@ -19,7 +19,7 @@ private:
 	std::string directory;
 	std::vector<Texture> texturesLoaded;
 
-	void loadModel(std::string path);
+	void loadModel(const std::string& path);
 	void processNode(aiNode *node, const aiScene *scene);
 	Mesh processMesh(aiMesh *mesh, const aiScene *scene);
 

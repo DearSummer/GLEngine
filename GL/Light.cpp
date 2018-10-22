@@ -40,6 +40,23 @@ void Light::active(const std::string & name)
 	}
 }
 
+void Light::setPosition(const glm::vec3 pos)
+{
+	switch (type)
+	{
+	case DIRECTIONAL_LIGHT:
+		break;
+	case SPOT_LIGHT:
+		spotLight.position = pos;
+		break;
+	case POINT_LIGHT:
+		pointLight.position = pos;
+		break;
+	default:
+		break;
+	}
+}
+
 glm::vec3 Light::getPosition() const
 {
 	glm::vec3 result(0, 0, 0);

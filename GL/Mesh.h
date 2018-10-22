@@ -8,7 +8,9 @@
 enum TextureType
 {
 	specular,
-	diffuse
+	diffuse,
+	emissive,
+	normal
 };
 
 struct MeshVertex

@@ -5,6 +5,7 @@
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
+#include <fstream>
 
 using std::exception;
 
@@ -88,6 +89,12 @@ Texture2D::Builder & Texture2D::Builder::setResourcePath(const char* resourcePat
 
 Texture2D * Texture2D::Builder::build()
 {
+
+	std::fstream imageFile;
+	imageFile.open(resourcePath, std::ios::in);
+	if (!imageFile)
+		return nullptr;
+
 	stbi_set_flip_vertically_on_load(true);
 
 	glGenTextures(1, &id);
