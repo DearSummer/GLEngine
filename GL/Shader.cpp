@@ -95,8 +95,8 @@ Shader::Shader(const char * vertexPath, const char * fragmentPath)
 
 		id = createShaderProgram();
 
-		//std::cout << vertexShaderCode << std::endl;
-		//std::cout << fragmentShaderCode << std::endl;
+		// std::cout << vertexShaderCode << std::endl;
+		// std::cout << fragmentShaderCode << std::endl;
 	}
 	catch (const exception& e)
 	{

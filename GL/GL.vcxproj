@@ -169,7 +169,6 @@
     <Text Include="FragmentSource.frag" />
     <Text Include="LightFragmentShader.frag" />
     <Text Include="LightVertexShader.vert" />
-    <Text Include="SimpleVertexShader.vert" />
     <Text Include="SimpleFragmentShader.frag" />
     <Text Include="VertexSource.vert" />
   </ItemGroup>
@@ -180,6 +179,10 @@
     <Image Include="lighting_maps_specular_color.png" />
     <Image Include="matrix.jpg" />
     <Image Include="pic.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="SimpleVertexShader.vert" />
+    <None Include="SingleColorShader.frag" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

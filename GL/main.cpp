@@ -18,6 +18,7 @@
 #include <filesystem>
 #include "Model.h"
 
+
 #define AUTO_COUT_MSG(str) std::cout << str << std::endl
 
 #pragma region  vertices
@@ -109,7 +110,6 @@ float vertices[] = {
 	-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f
 };
 #pragma endregion 
-
 glm::vec3 cubePositions[] = {
   glm::vec3(0.0f,  0.0f,  0.0f),
   glm::vec3(2.0f,  5.0f, -15.0f),
@@ -146,15 +146,15 @@ void framebuffer_size_callback(GLFWwindow * window, int width, int height);
 int main()
 {
 	GLFWwindow * glfwWindow = initWindow();
-	if(glfwWindow == nullptr)
+	if (glfwWindow == nullptr)
 	{
 		return -1;
 	}
 
 
 	//剔除背面
-	glEnable(GL_CULL_FACE);
-	glCullFace(GL_BACK);
+	//glEnable(GL_CULL_FACE);
+	//glCullFace(GL_BACK);
 
 	//开启深度测试
 	glEnable(GL_DEPTH_TEST);
@@ -163,64 +163,68 @@ int main()
 
 	glfwSetInputMode(glfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwSetCursorPosCallback(glfwWindow, cursor_callback);
- 
-	 //vertex array object
-	 unsigned int VAO;
-	 glGenVertexArrays(1, &VAO);
- 
-	 //vertext buffer object
-	 unsigned int VBO;
-	 glGenBuffers(1, &VBO);
-	 glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	 glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-	 glBindVertexArray(VAO);
 
- 
-	 //将vbo信息写到vao
-	 glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)0);
-	 glEnableVertexAttribArray(0);
- 
+	//vertex array object
+	unsigned int VAO;
+	glGenVertexArrays(1, &VAO);
 
-	 glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(3 * sizeof(float)));
-	 glEnableVertexAttribArray(1);
- 
-	 glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(6 * sizeof(float)));
-	 glEnableVertexAttribArray(2);
+	//vertext buffer object
+	unsigned int VBO;
+	glGenBuffers(1, &VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	glBindVertexArray(VAO);
+
+
+	//将vbo信息写到vao
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)0);
+	glEnableVertexAttribArray(0);
+
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
+
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(6 * sizeof(float)));
+	glEnableVertexAttribArray(2);
 
 	glm::mat4 modelMat(1.0f);
 	modelMat = glm::rotate(modelMat, glm::radians(-55.0f), glm::vec3(1, 0, 0));
-	
+
 	glm::mat4 projectionMat(1.0f);
 	projectionMat = glm::perspective(glm::radians(45.0f), windowWidth / windowHeight, 0.1f, 100.0f);
 
-	 unsigned int LIGHT_VAO;
-	 glGenVertexArrays(1, &LIGHT_VAO);
-	 glBindVertexArray(LIGHT_VAO);
-	 glBindBuffer(GL_ARRAY_BUFFER, VBO);
- 
-	 //将vbo信息写到vao
-	 glVertexAttribPointer(5, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)0);
-	 glEnableVertexAttribArray(5);
+	unsigned int LIGHT_VAO;
+	glGenVertexArrays(1, &LIGHT_VAO);
+	glBindVertexArray(LIGHT_VAO);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
-	 glVertexAttribPointer(6, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(6 * sizeof(float)));
-	 glEnableVertexAttribArray(6);
+	//将vbo信息写到vao
+	glVertexAttribPointer(5, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)0);
+	glEnableVertexAttribArray(5);
 
-	Shader * shader = new Shader("LightVertexShader.vert", "LightFragmentShader.frag");
+	glVertexAttribPointer(6, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(6 * sizeof(float)));
+	glEnableVertexAttribArray(6);
+
+	Shader * normalShader = new Shader("LightVertexShader.vert", "LightFragmentShader.frag");
 	Shader * simpleShader = new Shader("SimpleVertexShader.vert", "SimpleFragmentShader.frag");
-	
-	Model book("Resource/fantasy_book/source/TEST2.fbx","Resource/fantasy_book/textures/");
+	Shader * signalColorShader = new Shader("LightVertexShader.vert", "SingleColorShader.frag");
+
+	Model book("Resource/fantasy_book/source/TEST2.fbx", "Resource/fantasy_book/textures/");
 	Model man("Resource/nanosuit/nanosuit.obj", "Resource/nanosuit/");
 
-	 Texture2D * container = Texture2D::Builder().setResourcePath("container.png").build();
+	Texture2D * container = Texture2D::Builder().setResourcePath("container.png").build();
 
 
-	Light * directionalLight = Light::Builder(shader, glm::vec3(0.3f, 0.3f, 0.3f), glm::vec3(0.3f, 0.3f, 0.3f), glm::vec3(0.3f, 0.3f, 0.3f))
-		.setDirectionalLight(glm::vec3(0,glm::radians(90.0f),0))
+	Light * directionalLight = Light::Builder(normalShader, glm::vec3(0.3f, 0.3f, 0.3f), glm::vec3(0.3f, 0.3f, 0.3f), glm::vec3(0.3f, 0.3f, 0.3f))
+		.setDirectionalLight(glm::vec3(0, glm::radians(90.0f), 0))
 		.Build();
 
-	Light * spotLight = Light::Builder(shader, glm::vec3(0.3f, 0.3f, 0.3f), glm::vec3(0.3f, 0.3f, 0.3f), glm::vec3(0.3f, 0.3f, 0.3f))
-		.setSpotLight(camera->getPosition(),glm::eulerAngles(camera->getOrientation()),12.5f,25.0f)
+	Light * spotLight = Light::Builder(normalShader, glm::vec3(0.3f, 0.3f, 0.3f), glm::vec3(0.3f, 0.3f, 0.3f), glm::vec3(0.3f, 0.3f, 0.3f))
+		.setSpotLight(camera->getPosition(), glm::eulerAngles(camera->getOrientation()), 12.5f, 25.0f)
 		.Build();
+
+	//模板测试
+	glEnable(GL_STENCIL_TEST);
+	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
 	while (!glfwWindowShouldClose(glfwWindow))
 	{
@@ -231,21 +235,51 @@ int main()
 
 		//render command;
 		glClearColor(0.3f, 0.3f, 0.3f, 0.3f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 
 		glm::mat4 viewMat = camera->getViewMatrix();
 		projectionMat = glm::perspective(glm::radians(45.0f), windowWidth / windowHeight, 0.1f, 100.0f);
 
-		shader->use();
-		shader->setMatrix4X4("m", 1, glm::value_ptr(modelMat));
-		shader->setMatrix4X4("v", 1, glm::value_ptr(viewMat));
-		shader->setMatrix4X4("p", 1, glm::value_ptr(projectionMat));
+		modelMat = IDENTITY_MATIX;
+		modelMat = glm::translate(modelMat, glm::vec3(-1, 0, -1));
 
-		book.draw(shader);
-		man.draw(shader);
+		normalShader->use();
+		normalShader->setMatrix4X4("m", 1, glm::value_ptr(modelMat));
+		normalShader->setMatrix4X4("v", 1, glm::value_ptr(viewMat));
+		normalShader->setMatrix4X4("p", 1, glm::value_ptr(projectionMat));
 
-		//directionalLight->active("directionalLight01");
+
+		//背景图片锁定，不会写入到模板测试Buff当中
+		glStencilMask(0x00);
+		book.draw(normalShader);
+
+
+		//写入到模板测试Buff当中
+		glStencilFunc(GL_ALWAYS, 1, 0xff);
+		glStencilMask(0xff);
+		man.draw(normalShader);
+
+
+		glStencilFunc(GL_NOTEQUAL, 1, 0xff);
+		glStencilMask(0x00);
+		glDisable(GL_DEPTH_TEST);
+		signalColorShader->use();
+		modelMat = IDENTITY_MATIX;
+		modelMat = glm::translate(modelMat, glm::vec3(-1, 0, -1));
+		modelMat = glm::scale(modelMat, glm::vec3(1.05, 1.05, 1.05));
+		signalColorShader->setMatrix4X4("m", 1, glm::value_ptr(modelMat));
+		signalColorShader->setMatrix4X4("v", 1, glm::value_ptr(viewMat));
+		signalColorShader->setMatrix4X4("p", 1, glm::value_ptr(projectionMat));
+		man.draw(signalColorShader);
+
+		glStencilMask(0xff);
+		glEnable(GL_DEPTH_TEST);
+
+
+		normalShader->use();
+
+		directionalLight->active("directionalLight01");
 		spotLight->active("spotLight01");
 
 		spotLight->setPosition(camera->getPosition());
@@ -287,7 +321,7 @@ int main()
 		//std::cout << camera->toString() << std::endl;
 	}
 
-	delete shader;
+	delete normalShader;
 	//delete spotLight01;
 	//delete picTex;
 	//delete awesomeface;
